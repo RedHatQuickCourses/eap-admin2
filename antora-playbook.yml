@@ -1,10 +1,10 @@
 site:
-  title: Placeholder Course Title
-  start_page: placeholder-course-name::index.adoc
+  title: Red Hat JBoss EAP Administration II
+  start_page: eap-admin2::index.adoc
 
 content:
   sources:
-  - url: ./
+    - url: ./
 
 asciidoc:
   attributes:

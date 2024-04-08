@@ -1,9 +1,10 @@
-name: placeholder-course-name
-title: Placeholder Course Title
-version: 1
+name: eap-admin2
+title: Red Hat JBoss EAP Administration II
+version: 8
 nav:
-- modules/ROOT/nav.adoc
-- modules/chapter1/nav.adoc
-- modules/chapter2/nav.adoc
-- modules/chapter3/nav.adoc
-- modules/appendix/nav.adoc
+  - modules/ROOT/nav.adoc
+  - modules/adv-install/nav.adoc
+  - modules/domain/nav.adoc
+  - modules/cluster/nav.adoc
+  - modules/security/nav.adoc
+  - modules/openshift/nav.adoc

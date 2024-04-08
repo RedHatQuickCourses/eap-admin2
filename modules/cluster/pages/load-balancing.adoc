@@ -1,3 +1,2 @@
-= Section 2
-
+= Load Balancing JBoss EAP Instances
 This is _Section 2_ of _Chapter 3_ in the *hello* quick course....
