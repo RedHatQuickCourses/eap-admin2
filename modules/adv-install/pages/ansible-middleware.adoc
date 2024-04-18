@@ -1,4 +1,12 @@
 = Ansible Middleware
 
-This is _Section 3_ of _Chapter 1_ in the *hello* quick course....
+NOTE: The Ansible Middleware project for JBoss EAP 8.0 is currently in private beta and is being updated for EAP 8.0. This section is a work in progress...
 
+Meanwhile, here are some reference materials about the project. Installing, updating and patching EAP 7.4 instances is supported for now.
+
+== References
+
+* https://ansiblemiddleware.com[Ansible Middleware]
+* https://console.redhat.com/ansible/automation-hub/repo/published/redhat/eap[AAP Automation Hub page for EAP]
+* https://developers.redhat.com/articles/2024/01/09/fully-automated-setup-jboss-eap-cluster-using-ansible#[Fully automated JBoss EAP Cluster Setup]
+* https://developers.redhat.com/articles/2023/04/04/update-and-upgrade-jboss-eap-ansible#[Update JBoss EAP using Ansible Middleware]
