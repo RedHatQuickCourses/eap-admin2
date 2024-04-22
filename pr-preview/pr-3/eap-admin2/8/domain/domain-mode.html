@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>JBoss EAP Domain Mode Configuration :: Red Hat JBoss EAP Administration II</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="jvm-config.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img
+          src="../../../_/img/redhat-logo.png"
+          height="40px"
+          alt="Red Hat"
+        /></a>
+      <a
+        class="navbar-item"
+        style="font-size: 24px; color: white"
+        href="../../.."
+      >Red Hat JBoss EAP Administration II</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a
+          class="navbar-item"
+          href="https://github.com/RedHatQuickCourses/eap-admin2/issues"
+          target="_blank"
+        >Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="eap-admin2" data-version="8">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat JBoss EAP Administration II</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../adv-install/index.html">Advanced Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/response-files.html">Automated Installer Script</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/adv-patching.html">Patches and Updates</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/ansible-middleware.html">Ansible Middleware</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">JBoss EAP Domain Mode</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="domain-mode.html">JBoss EAP Domain Mode Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jvm-config.html">JVM Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../cluster/index.html">Clustering and High Availability</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster.html">Standalone Mode Clustering</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/domain-cluster.html">Domain Mode Clustering</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/load-balancing.html">Load Balancing JBoss EAP Instances</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../security/index.html">Security</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/eap-security.html">EAP Security</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/sso.html">Single Sign-On using OIDC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../openshift/index.html">EAP on OpenShift</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../openshift/eap-container.html">EAP Container</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../openshift/deploy-openshift.html">Deploy EAP Applications on OpenShift</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat JBoss EAP Administration II</span>
+    <span class="version">8</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat JBoss EAP Administration II</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">8</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat JBoss EAP Administration II</a></li>
+    <li><a href="index.html">JBoss EAP Domain Mode</a></li>
+    <li><a href="domain-mode.html">JBoss EAP Domain Mode Configuration</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">JBoss EAP Domain Mode Configuration</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>A JBoss EAP <em>Managed Domain</em> allows you to configure and manage multiple instances of JBoss EAP server from a central point of control.</p>
+</div>
+<div class="paragraph">
+<p>The diagram below illustrates the components of a JBoss EAP managed domain.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/eap-domain-mode.png" alt="eap domain mode" width="700">
+</div>
+<div class="title">Figure 1. JBoss EAP Managed Domain</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_terminology_and_concepts"><a class="anchor" href="#_terminology_and_concepts"></a>Terminology and Concepts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is important to understand the terminology and concepts in a managed domain before creating it.</p>
+</div>
+<div class="dlist unordered stack">
+<dl>
+<dt>Managed Domain</dt>
+<dd>
+<p>A collection of JBoss EAP instances managed from a central point of control.</p>
+</dd>
+<dt>Host</dt>
+<dd>
+<p>A physical or virtual machine that can run JVM processes.</p>
+</dd>
+<dt>Host Controller</dt>
+<dd>
+<p>A JVM process that runs on each host server that relays configuration information, runtime status, and management commands to JBoss EAP server instances on that particular machine. Host controllers communicate with the <em>Domain Controller</em> and ensures that JBoss EAP server instances are configured as per the policies for a particular domain.</p>
+</dd>
+<dt>Domain Controller</dt>
+<dd>
+<p>The central point from which the domain is controlled. It ensures that each JBoss EAP server is configured according to certain <em>policies</em>. The domain controller is a special type of host controller (It is also called the <em>Primary Host Controller</em>) that typically does not run JBoss EAP server instances. Instead it runs a small JVM process that communicates with host controllers and manages the configuration policies for the domain.</p>
+</dd>
+<dt>Server Group</dt>
+<dd>
+<p>A collection of JBoss EAP servers that are managed as a <em>single unit</em>.</p>
+</dd>
+<dt>Server</dt>
+<dd>
+<p>A JBoss EAP server instance running in its own JVM process. Jakarta EE applications run on servers. In a managed domain, servers are not managed individually, but as part of a <em>Server Group</em>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>In the diagram shown above:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>There are <code>4</code> hosts (<code>Host 1, Host 2, Host 3</code>, and <code>Host 4</code>)</p>
+</li>
+<li>
+<p>There are <code>4</code> host controllers (1 <code>primary host controller</code>, and 3 <code>secondary host controllers</code>)</p>
+</li>
+<li>
+<p>There are <code>4</code> JBoss EAP server instances (EAP Server 1-4)</p>
+</li>
+<li>
+<p>There are <code>2</code> Server Groups (<code>Server Group A</code> and <code>Server Group B</code>). <code>Server Group A</code> consists of <code>EAP servers 1 and 2</code>, <code>Server Group B</code> contains <code>EAP servers 3 and 4</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/domain_management">JBoss EAP Domain Management</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_configuring_a_managed_domain_of_jboss_eap_servers"><a class="anchor" href="#_exercise_configuring_a_managed_domain_of_jboss_eap_servers"></a>Exercise: Configuring a Managed Domain of JBoss EAP Servers</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>In this exercise, you will set up a JBoss EAP Managed Domain consisting of three servers. One server (<code>controller.example.com</code>) will be configured as the <code>Domain Controller</code>. The other two servers (<code>eap1.example.com</code> and <code>eap2.example.com</code>) will be configured to act as <code>Host Controllers</code> and will host the actual JBoss EAP server instances split into Server Groups.</p>
+</div>
+<div class="sect2">
+<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>You will need three servers or VMs with JBoss EAP 8.0 installed on them. Your IP addresses maybe different. Replace the values according to your set up.</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Host</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IP Address</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Role</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>controller.example.com</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>192.168.64.2</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Domain Controller</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eap1.example.com</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>192.168.0.11</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Host Controller</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eap2.example.com</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>192.168.0.12</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Host Controller</code></p></td>
+</tr>
+</tbody>
+</table>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_steps"><a class="anchor" href="#_steps"></a>Steps</h3>
+<div class="paragraph">
+<p>*</p>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">JBoss EAP Domain Mode</a></span>
+  <span class="next"><a href="jvm-config.html">JVM Configuration</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
