@@ -35,24 +35,304 @@ In this exercise, you will set up a JBoss EAP Managed Domain consisting of three
 
 === Pre-requisites
 
-* You will need three servers or VMs with JBoss EAP 8.0 installed on them. Your IP addresses maybe different. Replace the values according to your set up.
+* You will need *three (3)* servers or VMs with JBoss EAP 8.0 installed on them. Your IP addresses maybe different. Replace the values according to your set up.
 +
 [cols="1,1,1"]
 |===
 |*Host*|*IP Address*|*Role*
 |`controller.example.com`
-|`192.168.64.2`
+|`192.168.124.10`
 |`Domain Controller`
 
 |`eap1.example.com`
-|`192.168.0.11`
+|`192.168.124.11`
 |`Host Controller`
 
 |`eap2.example.com`
-|`192.168.0.12`
+|`192.168.124.12`
 |`Host Controller`
 |===
 
+* Install JBoss EAP 8.0 on all three servers. We recommend using the zip file installation method and installing it in a separate directory to overwrite the configuration of the standalone instance that you have used in previous exercises. For all three VMs, create a user named `jboss` that will run the JBoss EAP instance.
+
 === Steps
 
-* 
+NOTE: Although Red Hat does not recommend editing XML configuration files directly, there are scenarios where it is useful. In this case, to gain an understanding of how a managed domain is configured and the various XML files that are involved. Once the managed domain is set up, you can use either the EAP web console, or the EAP CLI to manage the domain configuration.
+
+. Log in to the VM that you will configure as the `Domain Controller` (*controller*). Log in as the `jboss` user to run the JBoss EAP instance.
+
+. Create the domain administrator management account (`eap-domain-admin`) using the `add-user.sh` script in the $EAP_HOME/bin folder.
++
+```bash
+$ ./add-user.sh -m -u eap-domain-admin -p redhat123
+```
+
+. Inspect the default `EAP_HOME/domain/configuration/domain.xml` file. There are 2 `Server Groups` defined in the domai (`main-server-group` and `other-server-group`).
++
+[source,xml]
+----
+<server-groups>
+        <server-group name="main-server-group" profile="full">
+            <jvm name="default">
+                <heap size="1000m" max-size="1000m"/>
+            </jvm>
+            <socket-binding-group ref="full-sockets"/>
+        </server-group>
+        <server-group name="other-server-group" profile="full-ha">
+            <jvm name="default">
+                <heap size="1000m" max-size="1000m"/>
+            </jvm>
+            <socket-binding-group ref="full-ha-sockets"/>
+        </server-group>
+</server-groups>
+----
+
+. Inspect the default `EAP_HOME/domain/configuration/host-primary.xml` file. This file configures the host as the primary controller (Domain Controller). There are no server definitions in this file. You will configure the `eap1` and `eap2` VMs as host controllers and configure them to point to the domain controller in the next steps. The actual JBoss EAP server instances hosting applications will run on the `eap1` and `eap2` VMs.
++
+[source,xml]
+----
+<domain-controller>
+    <local/>
+</domain-controller>
+----
+
+. Start the domain controller on the `controller` VM.
++
+```bash
+$ cd $EAP_HOME/bin
+$ ./domain.sh --host-config=host-primary.xml -b 192.168.124.10 -bmanagement 192.168.124.10
+==========================================
+  JBoss Bootstrap Environment
+  JBOSS_HOME: /home/jboss/jboss-eap-8.0
+  JAVA: java
+  JAVA_OPTS: -Xms64m -Xmx512m...
+===========================================
+...
+18:41:56,427 INFO  [org.jboss.as.process.Host Controller.status] (main) WFLYPC0018: Starting process 'Host Controller'
+...
+[Host Controller] 18:41:58,660 INFO  [org.jboss.as] (MSC service thread 1-2) WFLYSRV0049: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) starting
+...
+management interface listening on http://192.168.124.10:9990/management 
+[Host Controller] 18:42:05,421 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0053: Admin console listening on http://192.168.124.10:9990 and https://192.168.124.10:-1
+[Host Controller] 18:42:05,522 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) (Host Controller) started in 8951ms - Started 71 of 71 services (14 services are lazy, passive or on-demand) - Host Controller configuration files in use: domain.xml, host-primary.xml
+```
++
+Since the secondary host controllers need to communicate with the domain controller to fetch configuration information, you need to start the primary controller to bind to the IP address of the `controller` VM rather than `localhost`. 
++
+NOTE: If you do not pass a `--host-config` argument to the `domain.sh` script, it will read the `EAP_HOME/domain/configuration/host.xml` configuration file by default. Similarly, if you do not pass a `-b` flag with a valid IP address for the VM, it will start and bind to `localhost`.
+
+. Log in to the `eap1` VM as the `jboss` user. Inspect the `EAP_HOME/domain/configuration/host-secondary.xml` file. Notice that there are two servers declared. `server-one` belongs to the `main-server-group`, and `server-two` belongs to the `other-server-group`.
++
+[source,xml]
+----
+<servers>
+    <server name="server-one" group="main-server-group"/>
+    <server name="server-two" group="other-server-group">
+        <socket-bindings port-offset="150"/>
+    </server>
+ </servers>
+----
++
+NOTE: `server-two` needs to run on a different port to avoid port clashes. In the default configuration, it runs on an offset of `150`. So `server-one` will run on port `8080` (the base port), while `server-two` will run on port `8230` (8080+150).
+
+. Before you start the host controller process on `eap1`, you need to configure a couple of items to ensure that the host controller on `eap1` can communicate with the domain controller running on the `controller` VM. First, add the following `authentication-client` element in the `host-secondary.xml` file on `eap1`. Add this block after the *subsystem xmlns="urn:wildfly:elytron:18.0"* and before the *<providers>* element.
++
+[source,xml]
+----
+...
+<subsystem xmlns="urn:jboss:domain:core-management:1.0"/>
+<subsystem xmlns="urn:wildfly:elytron:18.0" final-providers="combined-providers" disallowed-providers="OracleUcrypto">
+<authentication-client>
+  <authentication-configuration name="eap1-hc-auth" authentication-name="eap-domain-admin" realm="ManagementRealm" sasl-mechanism-selector="DIGEST-MD5">
+    <credential-reference clear-text="redhat123"/>
+  </authentication-configuration>
+  <authentication-context name="eap1-hc-auth-context">
+    <match-rule authentication-configuration="eap1-hc-auth"/>
+  </authentication-context>
+</authentication-client>
+...
+----
++
+This XML snippet configured an authentication context for the host controller on `eap1` to communicate with the domain controller using the management user `eap-domain-admin` you created earlier on the `controller` VM. Ensure the that the `authentication-name` and `clear-text` values match the username and password of the management user.
+
+. Reference the `authentication-context` in the `domain-controller` element. Notice that, where you added `local` to the domain controller configuration on the `controller` VM, on `eap1` you add a `remote` element and refer to the authentication context you created earlier. Observe the placeholder variables in the `static-discovery` element for the `host`, `protocol`, and `port`. You will pass the IP address of the domain controller as command line flags to the `domain.sh` script.
++
+[source,xml]
+----
+<domain-controller>
+  <remote authentication-context="eap1-hc-auth-context">
+    <discovery-options>
+      <static-discovery name="primary" protocol="${jboss.domain.primary.protocol:remote+http}" host="${jboss.domain.primary.address}" port="${jboss.domain.primary.port:9990}"/>
+    </discovery-options>
+  </remote>
+</domain-controller>
+----
+
+. On RHEL 9 VMs, for security reasons, only a limited number of ports are opened for access from external users. You need to open port `9990` on the `controller` VM to allow the host controllers to connect. First, verify that port 9990 is not open as the `root` user.
++
+```bash
+[root@controller ~]# firewall-cmd --list-all
+public (active)
+...
+  interfaces: enp1s0
+  sources: 
+  services: cockpit dhcpv6-client ssh
+  ports: 
+  protocols: 
+...
+```
+
+. Open the `TCP` port `9990` as the `root` user.
++
+```bash
+[root@controller ~]# firewall-cmd --permanent --add-port=9990/tcp
+success
+[root@controller ~]# firewall-cmd --reload
+success
+```
+
+. Verify that port 9990 is open.
++
+```bash
+[root@controller ~]# firewall-cmd --list-all
+public (active)
+...
+  interfaces: enp1s0
+  sources: 
+  services: cockpit dhcpv6-client ssh
+  ports: 9990/tcp
+  protocols:
+...
+```
++
+WARNING: Failure to configure the firewall properly will result in failures during host controller start up.
+
+. You can now start the host controller on `eap1` as the `jboss` user.
++
+```bash
+[jboss@eap1 bin]$ ./domain.sh --host-config=host-secondary.xml -Djboss.host.name=eap1 -Djboss.domain.primary.address=192.168.124.10 -b 192.168.124.11 -bmanagement 192.168.124.11
+...
+[Host Controller] 19:41:42,928 INFO  [org.jboss.as.host.controller] (Controller Boot Thread) WFLYHC0148: Connected to the domain controller at remote+http://192.168.124.10:9990
+[Host Controller] 19:41:43,081 INFO  [org.jboss.as.host.controller] (Controller Boot Thread) WFLYHC0023: Starting server server-one
+19:41:43,406 INFO  [org.jboss.as.process.Server:server-one.status] (ProcessController-threads - 4) WFLYPC0018: Starting process 'Server:server-one'
+...
+19:41:47,408 INFO  [org.jboss.as.process.Server:server-two.status] (ProcessController-threads - 4) WFLYPC0018: Starting process 'Server:server-two'
+[Host Controller] 19:41:54,498 INFO  [org.jboss.as.host.controller] (management task-1) WFLYHC0021: Server [Server:server-two] connected using connection [Channel ID 65dd20f9 (inbound) of Remoting connection 45170f14 to eap1.example.com/192.168.124.11:36742 of endpoint "eap1:MANAGEMENT" <39d6674b>]
+[Host Controller] 19:41:54,597 INFO  [org.jboss.as.host.controller] (server-registration-threads - 1) WFLYHC0020: Registering server server-two
+...
+[Host Controller] 19:41:54,638 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) (Host Controller) started in 19245ms - Started 71 of 72 services (15 services are lazy, passive or on-demand) - Host Controller configuration file in use: host-secondary.xml
+```
++
+NOTE: Pass the IP address of the `controller` VM to `-Djboss.domain.primary.address` flag. Pass the IP address of the `eap1` VM to the `-b` and `-bmanagement` flags. You must also pass a unique host name to the `-Djboss.host.name` flag.
++
+NOTE: If the firewall on the `controller` VM is not configured correctly, or if there is a network connectivity issue between the domain controller and host controller, you will see errors like the following:
+[Host Controller] Caused by: java.net.ConnectException: WFLYPRT0053: Could not connect to remote+http://192.168.124.10:9990. The connection failed
+...
+[Host Controller] Caused by: java.net.NoRouteToHostException: No route to host
+
+. Switch to the terminal window on the `controller` VM and confirm you see the following, indicating that the domain controller has registered the host controller on `eap1` successfully:
++
+```text
+... WFLYHC0019: Registered remote secondary host "eap1", JBoss JBoss EAP 8.0.0.GA (WildFly 21.0.5.Final-redhat-00001)
+```
+
+. Log in to the `eap2` VM as the `jboss` user. Inspect the EAP_HOME/domain/configuration/host-secondary.xml file. Edit the `servers` section, and rename the existing server configuration under it as per the following:
++
+[source,xml]
+----
+<servers>
+  <server name="server-three" group="main-server-group"/>
+    <server name="server-four" group="other-server-group">
+      <socket-bindings port-offset="150"/>
+    </server>
+</servers>
+----
++
+`server-three` belongs to the `main-server-group`, and `server-two` belongs to the `other-server-group`. Similar to the configuration on `eap1`, `server-four` runs with a port offset of *150*.
+
+.  Add the following `authentication-client` element in the `host-secondary.xml` file on `eap2`.
++
+[source,xml]
+----
+...
+<subsystem xmlns="urn:jboss:domain:core-management:1.0"/>
+<subsystem xmlns="urn:wildfly:elytron:18.0" final-providers="combined-providers" disallowed-providers="OracleUcrypto">
+<authentication-client>
+  <authentication-configuration name="eap2-hc-auth" authentication-name="eap-domain-admin" realm="ManagementRealm" sasl-mechanism-selector="DIGEST-MD5">
+    <credential-reference clear-text="redhat123"/>
+  </authentication-configuration>
+  <authentication-context name="eap2-hc-auth-context">
+    <match-rule authentication-configuration="eap2-hc-auth"/>
+  </authentication-context>
+</authentication-client>
+...
+----
++
+This XML snippet configured an authentication context for the host controller on `eap2` to communicate with the domain controller using the management user `eap-domain-admin` you created earlier on the `controller` VM. Ensure the that the `authentication-name` and `clear-text` values match the username and password of the management user.
+
+. Reference the `authentication-context` in the `domain-controller` element.
++
+[source,xml]
+----
+<domain-controller>
+  <remote authentication-context="eap2-hc-auth-context">
+    <discovery-options>
+      <static-discovery name="primary" protocol="${jboss.domain.primary.protocol:remote+http}" host="${jboss.domain.primary.address}" port="${jboss.domain.primary.port:9990}"/>
+    </discovery-options>
+  </remote>
+</domain-controller>
+----
+
+. Start the host controller on `eap2` as the `jboss` user.
++
+```bash
+[jboss@eap2 bin]$ ./domain.sh --host-config=host-secondary.xml -Djboss.host.name=eap2 -Djboss.domain.primary.address=192.168.124.10 -b 192.168.124.12 -bmanagement 192.168.124.12
+...
+08:55:12,128 INFO  [org.jboss.as.process.Host Controller.status] (main) WFLYPC0018: Starting process 'Host Controller'
+[Host Controller] 08:55:13,429 INFO  [org.jboss.as] (MSC service thread 1-2) WFLYSRV0049: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) starting
+...
+[Host Controller] 08:55:19,640 INFO  [org.jboss.as.host.controller] (Controller Boot Thread) WFLYHC0148: Connected to the domain controller at remote+http://192.168.124.10:9990
+[Host Controller] 08:55:19,795 INFO  [org.jboss.as.host.controller] (Controller Boot Thread) WFLYHC0023: Starting server server-three
+08:55:20,117 INFO  [org.jboss.as.process.Server:server-three.status] (ProcessController-threads - 3) WFLYPC0018: Starting process 'Server:server-three'
+...
+08:55:23,968 INFO  [org.jboss.as.process.Server:server-four.status] (ProcessController-threads - 3) WFLYPC0018: Starting process 'Server:server-four'
+...
+[Host Controller] 08:55:30,618 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0062: Http management interface listening on http://192.168.124.12:9990/management and https://192.168.124.12:-1/management
+...
+[Host Controller] 08:55:30,625 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) (Host Controller) started in 18373ms - Started 71 of 72 services (15 services are lazy, passive or on-demand) - Host Controller configuration file in use: host-secondary.xml
+```
++
+NOTE: Pass the IP address of the `controller` VM to `-Djboss.domain.primary.address` flag. Pass the IP address of the `eap2` VM to the `-b` and `-bmanagement` flags. You must also pass a unique host name to the `-Djboss.host.name` flag.
+
+. Observe the terminal windows where you started the domain controller on `controller` VM and verify that the host controller on `eap2` has been registered.
++
+```
+...
+[Host Controller] 08:35:34,792 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) (Host Controller) started in 9543ms - Started 71 of 71 services (14 services are lazy, passive or on-demand) - Host Controller configuration files in use: domain.xml, host-primary.xml
+[Host Controller] 08:41:09,523 INFO  [org.jboss.as.domain.controller] (Host Controller Service Threads - 22) WFLYHC0019: Registered remote secondary host "eap1", JBoss JBoss EAP 8.0.0.GA (WildFly 21.0.5.Final-redhat-00001)
+[Host Controller] 08:55:19,633 INFO  [org.jboss.as.domain.controller] (Host Controller Service Threads - 22) WFLYHC0019: Registered remote secondary host "eap2", JBoss JBoss EAP 8.0.0.GA (WildFly 21.0.5.Final-redhat-00001)
+```
+
+. Your managed domain is configured and started. Login to web console to view and manage the domain configuration. Navigate to http://<controller_ip_address>:9990 and log in as the `eap-domain-admin` user with password `redhat123`.
+
+. Click on `Runtime > Topology` to see the topology of your managed domain.
++
+image::1-eap-domain-topology.png[title=Managed Domain Topology]
+
+. Click on `Hosts` in the `Browse By` column to view the hosts and the servers running on them.
++
+image::2-hosts-view.png[title=Hosts View]
+
+. Similarly, click on `Server Groups` to view the server groups and the servers that are part of them.
++
+image::3-sg-view.png[title=Server Groups View]
+
+. You can click on any of the servers in the `Server Groups` view, and manage their lifecycle (start, stop, restart).
++
+image::4-server-lifecycle.png[title=Manage Server Lifecycle]
+
+. (Optional step) You can also update and apply patches to the JBoss EAP servers running on the hosts. In the top navigation bar of the EAP web console, click on `Update Manager > eap1 > Updates`. Click on the `Installation update methods` drop-down and select `Online updates` to check if any updates are available. If updates are available, apply them and the server instances will be restarted after the update.
++
+image::5-update-manager.png[title=Update Manager in Domain Mode]
+
+You have successfully set up an EAP managed domain. In the next section, you will learn how to deploy applications to the server groups in a managed domain.
