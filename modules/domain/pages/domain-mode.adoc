@@ -1,3 +1,58 @@
-= Domain Mode
+= JBoss EAP Domain Mode Configuration
 
-This is _Section 1_ of _Chapter 2_ in the *hello* quick course....
+A JBoss EAP _Managed Domain_ allows you to configure and manage multiple instances of JBoss EAP server from a central point of control.
+
+The diagram below illustrates the components of a JBoss EAP managed domain.
+
+image::eap-domain-mode.png[title=JBoss EAP Managed Domain,width=700]
+
+== Terminology and Concepts
+
+It is important to understand the terminology and concepts in a managed domain before creating it.
+
+[unordered.stack]
+Managed Domain:: A collection of JBoss EAP instances managed from a central point of control.
+Host:: A physical or virtual machine that can run JVM processes.
+Host Controller:: A JVM process that runs on each host server that relays configuration information, runtime status, and management commands to JBoss EAP server instances on that particular machine. Host controllers communicate with the _Domain Controller_ and ensures that JBoss EAP server instances are configured as per the policies for a particular domain.
+Domain Controller:: The central point from which the domain is controlled. It ensures that each JBoss EAP server is configured according to certain _policies_. The domain controller is a special type of host controller (It is also called the _Primary Host Controller_) that typically does not run JBoss EAP server instances. Instead it runs a small JVM process that communicates with host controllers and manages the configuration policies for the domain.
+Server Group:: A collection of JBoss EAP servers that are managed as a _single unit_.
+Server:: A JBoss EAP server instance running in its own JVM process. Jakarta EE applications run on servers. In a managed domain, servers are not managed individually, but as part of a _Server Group_.
+
+In the diagram shown above:
+
+* There are `4` hosts (`Host 1, Host 2, Host 3`, and `Host 4`)
+* There are `4` host controllers (1 `primary host controller`, and 3 `secondary host controllers`)
+* There are `4` JBoss EAP server instances (EAP Server 1-4)
+* There are `2` Server Groups (`Server Group A` and `Server Group B`). `Server Group A` consists of `EAP servers 1 and 2`, `Server Group B` contains `EAP servers 3 and 4`.
+
+== References
+
+* https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/domain_management[JBoss EAP Domain Management]
+
+== Exercise: Configuring a Managed Domain of JBoss EAP Servers
+
+In this exercise, you will set up a JBoss EAP Managed Domain consisting of three servers. One server (`controller.example.com`) will be configured as the `Domain Controller`. The other two servers (`eap1.example.com` and `eap2.example.com`) will be configured to act as `Host Controllers` and will host the actual JBoss EAP server instances split into Server Groups.
+
+=== Pre-requisites
+
+* You will need three servers or VMs with JBoss EAP 8.0 installed on them. Your IP addresses maybe different. Replace the values according to your set up.
++
+[cols="1,1,1"]
+|===
+|*Host*|*IP Address*|*Role*
+|`controller.example.com`
+|`192.168.64.2`
+|`Domain Controller`
+
+|`eap1.example.com`
+|`192.168.0.11`
+|`Host Controller`
+
+|`eap2.example.com`
+|`192.168.0.12`
+|`Host Controller`
+|===
+
+=== Steps
+
+* 
