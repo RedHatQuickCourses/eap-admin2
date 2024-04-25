@@ -300,6 +300,19 @@
 </div>
 </li>
 <li>
+<p>On systems where firewalls are enabled (RHEL 9, Fedora), you will not see any output. You need to open up ports <code>8080</code> and <code>8230</code> on both <code>eap1</code> and <code>eap2</code> VMs. Execute the below commands on <strong>BOTH</strong> VMs:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">root@eap1# firewall-cmd --permanent --add-port=8080/tcp
+success
+root@eap1# firewall-cmd --permanent --add-port=8230/tcp
+success
+firewall-cmd --reload
+success</code></pre>
+</div>
+</div>
+</li>
+<li>
 <p>Now navigate to <a href="http://ip_of_eap2:8080/helloworld" class="bare">http://ip_of_eap2:8080/helloworld</a> in a new tab on your browser and observe that the same application should show similar output, but this time it shows a different host and port.</p>
 <div class="imageblock">
 <div class="content">
@@ -322,6 +335,18 @@
 </td>
 <td class="content">
 You can see the same output when you navigate to <a href="http://ip_of_eap2:8230/temperature-converter" class="bare">http://ip_of_eap2:8230/temperature-converter</a>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Remember to open up firewall ports 8080 and 8230 on the eap2 VM to ensure application output
 </td>
 </tr>
 </table>
