@@ -303,11 +303,11 @@
 <p>On systems where firewalls are enabled (RHEL 9, Fedora), you will not see any output. You need to open up ports <code>8080</code> and <code>8230</code> on both <code>eap1</code> and <code>eap2</code> VMs. Execute the below commands on <strong>BOTH</strong> VMs:</p>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">root@eap1# firewall-cmd --permanent --add-port=8080/tcp
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[root@eap1] firewall-cmd --permanent --add-port=8080/tcp
 success
-root@eap1# firewall-cmd --permanent --add-port=8230/tcp
+[root@eap1] firewall-cmd --permanent --add-port=8230/tcp
 success
-firewall-cmd --reload
+[root@eap1] firewall-cmd --reload
 success</code></pre>
 </div>
 </div>

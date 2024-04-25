@@ -270,6 +270,18 @@
 <div class="sect1">
 <h2 id="_exercise_configuring_a_managed_domain_of_jboss_eap_servers"><a class="anchor" href="#_exercise_configuring_a_managed_domain_of_jboss_eap_servers"></a>Exercise: Configuring a Managed Domain of JBoss EAP Servers</h2>
 <div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+For configuring JBoss EAP in Domain mode, we recommend you work with a separate installation of JBoss EAP in a different folder from where you configured and ran the hands-on exercise for the default standalone mode EAP instance. The simplest way to do this is to download the zip archive installation of JBoss EAP, which comes with a fully pre-configured JBoss EAP instance. Simply unarchive the zip file in a folder of your choice other than <strong>/opt</strong>, and then follow the instructions in this chapter.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>In this exercise, you will set up a JBoss EAP Managed Domain consisting of three servers. One server (<code>controller.example.com</code>) will be configured as the <code>Domain Controller</code>. The other two servers (<code>eap1.example.com</code> and <code>eap2.example.com</code>) will be configured to act as <code>Host Controllers</code> and will host the actual JBoss EAP server instances split into Server Groups.</p>
 </div>
@@ -335,7 +347,7 @@ Although Red Hat does not recommend editing XML configuration files directly, th
 <p>Log in to the VM that you will configure as the <code>Domain Controller</code> (<strong>controller</strong>). Log in as the <code>jboss</code> user to run the JBoss EAP instance.</p>
 </li>
 <li>
-<p>Create the domain administrator management account (<code>eap-domain-admin</code>) using the <code>add-user.sh</code> script in the $EAP_HOME/bin folder.</p>
+<p>Create the domain administrator management account (<code>eap-domain-admin</code>) using the <code>add-user.sh</code> script in the `$EAP_HOME/bin`folder.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ ./add-user.sh -m -u eap-domain-admin -p redhat123</code></pre>
