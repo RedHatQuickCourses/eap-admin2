@@ -31,6 +31,8 @@ In the diagram shown above:
 
 == Exercise: Configuring a Managed Domain of JBoss EAP Servers
 
+IMPORTANT: For configuring JBoss EAP in Domain mode, we recommend you work with a separate installation of JBoss EAP in a different folder from where you configured and ran the hands-on exercise for the default standalone mode EAP instance. The simplest way to do this is to download the zip archive installation of JBoss EAP, which comes with a fully pre-configured JBoss EAP instance. Simply unarchive the zip file in a folder of your choice other than */opt*, and then follow the instructions in this chapter.
+
 In this exercise, you will set up a JBoss EAP Managed Domain consisting of three servers. One server (`controller.example.com`) will be configured as the `Domain Controller`. The other two servers (`eap1.example.com` and `eap2.example.com`) will be configured to act as `Host Controllers` and will host the actual JBoss EAP server instances split into Server Groups.
 
 === Pre-requisites
@@ -61,7 +63,7 @@ NOTE: Although Red Hat does not recommend editing XML configuration files direct
 
 . Log in to the VM that you will configure as the `Domain Controller` (*controller*). Log in as the `jboss` user to run the JBoss EAP instance.
 
-. Create the domain administrator management account (`eap-domain-admin`) using the `add-user.sh` script in the $EAP_HOME/bin folder.
+. Create the domain administrator management account (`eap-domain-admin`) using the `add-user.sh` script in the `$EAP_HOME/bin`folder.
 +
 ```bash
 $ ./add-user.sh -m -u eap-domain-admin -p redhat123

@@ -60,11 +60,11 @@ image::hello-app-output-main.png[Hello World Application on server-one]
 . On systems where firewalls are enabled (RHEL 9, Fedora), you will not see any output. You need to open up ports `8080` and `8230` on both `eap1` and `eap2` VMs. Execute the below commands on *BOTH* VMs:
 +
 ```bash
-root@eap1# firewall-cmd --permanent --add-port=8080/tcp
+[root@eap1] firewall-cmd --permanent --add-port=8080/tcp
 success
-root@eap1# firewall-cmd --permanent --add-port=8230/tcp
+[root@eap1] firewall-cmd --permanent --add-port=8230/tcp
 success
-firewall-cmd --reload
+[root@eap1] firewall-cmd --reload
 success
 ```
 
