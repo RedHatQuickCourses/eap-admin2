@@ -245,7 +245,7 @@ Changes to the JVM settings in <code>standalone.conf</code> require a server res
 </div>
 </div>
 <div class="sect1">
-<h2 id="_jvm_configuration_in_in_a_managed_domain"><a class="anchor" href="#_jvm_configuration_in_in_a_managed_domain"></a>JVM Configuration in in a Managed Domain</h2>
+<h2 id="_jvm_configuration_in_a_managed_domain"><a class="anchor" href="#_jvm_configuration_in_a_managed_domain"></a>JVM Configuration in a Managed Domain</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>In the case of a managed domain, the host controller process starts EAP server instances as per the domain controller configuration policies. The JVM options for each individual server can be configured at three different
@@ -405,7 +405,7 @@ There is a <code>EAP_HOME/bin/domain.conf</code> file in the same location as th
 <p>Edit the JVM server configuration for one of the servers (server-one, server-two etc) and verify that values set at the individual server level override values from both the host and the server group level.</p>
 </li>
 <li>
-<p>Try connecting to the domain controller using the EAP CLI and configure JVM settings using EAP CLI commands. Consult the product docs at <a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_jvm_settings#jvm_host_controller" class="bare">https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_jvm_settings#jvm_host_controller</a> for examples.</p>
+<p>Try connecting to the domain controller using the EAP CLI and configure JVM settings using EAP CLI commands. Consult the product docs at <a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_jvm_settings#jvm_host_controller" class="bare">https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_jvm_settings#jvm_host_controller</a> for examples. [Hint: Use tab-completion in the EAP CLI to explore the commands and operations available in a managed domain.]</p>
 </li>
 </ol>
 </div>
