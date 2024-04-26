@@ -35,7 +35,7 @@ Within the double quotes of the `JAVA_OPTS` variable, you can edit, add, or dele
 settings regarding the JVM memory and garbage collection options for your standalone server.
 Changes to the JVM settings in `standalone.conf` require a server restart.
 
-== JVM Configuration in in a Managed Domain
+== JVM Configuration in a Managed Domain
 
 In the case of a managed domain, the host controller process starts EAP server instances as per the domain controller configuration policies. The JVM options for each individual server can be configured at three different
 levels:
@@ -107,4 +107,4 @@ image::host-config-view.png[title=Configure Host Level Settings]
 
 . Edit the JVM server configuration for one of the servers (server-one, server-two etc) and verify that values set at the individual server level override values from both the host and the server group level.
 
-. Try connecting to the domain controller using the EAP CLI and configure JVM settings using EAP CLI commands. Consult the product docs at https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_jvm_settings#jvm_host_controller for examples.
+. Try connecting to the domain controller using the EAP CLI and configure JVM settings using EAP CLI commands. Consult the product docs at https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_jvm_settings#jvm_host_controller for examples. [Hint: Use tab-completion in the EAP CLI to explore the commands and operations available in a managed domain.]
