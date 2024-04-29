@@ -3,9 +3,9 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Domain Mode :: Red Hat JBoss EAP Administration II</title>
+    <title>JBoss EAP Domain Mode Configuration :: Red Hat JBoss EAP Administration II</title>
     <link rel="prev" href="index.html">
-    <link rel="next" href="jvm-config.html">
+    <link rel="next" href="domain-deployment.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -78,10 +78,13 @@
 <ul class="nav-list">
   <li class="nav-item" data-depth="1">
     <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="index.html">Domain Mode</a>
+    <a class="nav-link" href="index.html">JBoss EAP Domain Mode</a>
 <ul class="nav-list">
   <li class="nav-item is-current-page" data-depth="2">
-    <a class="nav-link" href="domain-mode.html">Domain Mode</a>
+    <a class="nav-link" href="domain-mode.html">JBoss EAP Domain Mode Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="domain-deployment.html">Deploying Applications</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="jvm-config.html">JVM Configuration</a>
@@ -170,8 +173,8 @@
 <nav class="breadcrumbs" aria-label="breadcrumbs">
   <ul>
     <li><a href="../index.html">Red Hat JBoss EAP Administration II</a></li>
-    <li><a href="index.html">Domain Mode</a></li>
-    <li><a href="domain-mode.html">Domain Mode</a></li>
+    <li><a href="index.html">JBoss EAP Domain Mode</a></li>
+    <li><a href="domain-mode.html">JBoss EAP Domain Mode Configuration</a></li>
   </ul>
 </nav>
 </div>
@@ -180,13 +183,570 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Domain Mode</h1>
+<h1 class="page">JBoss EAP Domain Mode Configuration</h1>
+<div id="preamble">
+<div class="sectionbody">
 <div class="paragraph">
-<p>This is <em>Section 1</em> of <em>Chapter 2</em> in the <strong>hello</strong> quick course&#8230;&#8203;.</p>
+<p>A JBoss EAP <em>Managed Domain</em> allows you to configure and manage multiple instances of JBoss EAP server from a central point of control.</p>
+</div>
+<div class="paragraph">
+<p>The diagram below illustrates the components of a JBoss EAP managed domain.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/eap-domain-mode.png" alt="eap domain mode" width="700">
+</div>
+<div class="title">Figure 1. JBoss EAP Managed Domain</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_terminology_and_concepts"><a class="anchor" href="#_terminology_and_concepts"></a>Terminology and Concepts</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>It is important to understand the terminology and concepts in a managed domain before creating it.</p>
+</div>
+<div class="dlist unordered stack">
+<dl>
+<dt>Managed Domain</dt>
+<dd>
+<p>A collection of JBoss EAP instances managed from a central point of control.</p>
+</dd>
+<dt>Host</dt>
+<dd>
+<p>A physical or virtual machine that can run JVM processes.</p>
+</dd>
+<dt>Host Controller</dt>
+<dd>
+<p>A JVM process that runs on each host server that relays configuration information, runtime status, and management commands to JBoss EAP server instances on that particular machine. Host controllers communicate with the <em>Domain Controller</em> and ensures that JBoss EAP server instances are configured as per the policies for a particular domain.</p>
+</dd>
+<dt>Domain Controller</dt>
+<dd>
+<p>The central point from which the domain is controlled. It ensures that each JBoss EAP server is configured according to certain <em>policies</em>. The domain controller is a special type of host controller (It is also called the <em>Primary Host Controller</em>) that typically does not run JBoss EAP server instances. Instead it runs a small JVM process that communicates with host controllers and manages the configuration policies for the domain.</p>
+</dd>
+<dt>Server Group</dt>
+<dd>
+<p>A collection of JBoss EAP servers that are managed as a <em>single unit</em>.</p>
+</dd>
+<dt>Server</dt>
+<dd>
+<p>A JBoss EAP server instance running in its own JVM process. Jakarta EE applications run on servers. In a managed domain, servers are not managed individually, but as part of a <em>Server Group</em>.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>In the diagram shown above:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>There are <code>4</code> hosts (<code>Host 1, Host 2, Host 3</code>, and <code>Host 4</code>)</p>
+</li>
+<li>
+<p>There are <code>4</code> host controllers (1 <code>primary host controller</code>, and 3 <code>secondary host controllers</code>)</p>
+</li>
+<li>
+<p>There are <code>4</code> JBoss EAP server instances (EAP Server 1-4)</p>
+</li>
+<li>
+<p>There are <code>2</code> Server Groups (<code>Server Group A</code> and <code>Server Group B</code>). <code>Server Group A</code> consists of <code>EAP servers 1 and 2</code>, <code>Server Group B</code> contains <code>EAP servers 3 and 4</code>.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/domain_management">JBoss EAP Domain Management</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_configuring_a_managed_domain_of_jboss_eap_servers"><a class="anchor" href="#_exercise_configuring_a_managed_domain_of_jboss_eap_servers"></a>Exercise: Configuring a Managed Domain of JBoss EAP Servers</h2>
+<div class="sectionbody">
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+For configuring JBoss EAP in Domain mode, we recommend you work with a separate installation of JBoss EAP in a different folder from where you configured and ran the hands-on exercise for the default standalone mode EAP instance. The simplest way to do this is to download the zip archive installation of JBoss EAP, which comes with a fully pre-configured JBoss EAP instance. Simply unarchive the zip file in a folder of your choice other than <strong>/opt</strong>, and then follow the instructions in this chapter.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In this exercise, you will set up a JBoss EAP Managed Domain consisting of three servers. One server (<code>controller.example.com</code>) will be configured as the <code>Domain Controller</code>. The other two servers (<code>eap1.example.com</code> and <code>eap2.example.com</code>) will be configured to act as <code>Host Controllers</code> and will host the actual JBoss EAP server instances split into Server Groups.</p>
+</div>
+<div class="sect2">
+<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>You will need <strong>three (3)</strong> servers or VMs with JBoss EAP 8.0 installed on them. Your IP addresses maybe different. Replace the values according to your set up.</p>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Host</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>IP Address</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Role</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>controller.example.com</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>192.168.124.10</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Domain Controller</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eap1.example.com</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>192.168.124.11</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Host Controller</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>eap2.example.com</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>192.168.124.12</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Host Controller</code></p></td>
+</tr>
+</tbody>
+</table>
+</li>
+<li>
+<p>Install JBoss EAP 8.0 on all three servers. We recommend using the zip file installation method and installing it in a separate directory to overwrite the configuration of the standalone instance that you have used in previous exercises. For all three VMs, create a user named <code>jboss</code> that will run the JBoss EAP instance.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_steps"><a class="anchor" href="#_steps"></a>Steps</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Although Red Hat does not recommend editing XML configuration files directly, there are scenarios where it is useful. In this case, to gain an understanding of how a managed domain is configured and the various XML files that are involved. Once the managed domain is set up, you can use either the EAP web console, or the EAP CLI to manage the domain configuration.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to the VM that you will configure as the <code>Domain Controller</code> (<strong>controller</strong>). Log in as the <code>jboss</code> user to run the JBoss EAP instance.</p>
+</li>
+<li>
+<p>Create the domain administrator management account (<code>eap-domain-admin</code>) using the <code>add-user.sh</code> script in the `$EAP_HOME/bin`folder.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ ./add-user.sh -m -u eap-domain-admin -p redhat123</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Inspect the default <code>EAP_HOME/domain/configuration/domain.xml</code> file. There are 2 <code>Server Groups</code> defined in the domai (<code>main-server-group</code> and <code>other-server-group</code>).</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;server-groups&gt;
+        &lt;server-group name="main-server-group" profile="full"&gt;
+            &lt;jvm name="default"&gt;
+                &lt;heap size="1000m" max-size="1000m"/&gt;
+            &lt;/jvm&gt;
+            &lt;socket-binding-group ref="full-sockets"/&gt;
+        &lt;/server-group&gt;
+        &lt;server-group name="other-server-group" profile="full-ha"&gt;
+            &lt;jvm name="default"&gt;
+                &lt;heap size="1000m" max-size="1000m"/&gt;
+            &lt;/jvm&gt;
+            &lt;socket-binding-group ref="full-ha-sockets"/&gt;
+        &lt;/server-group&gt;
+&lt;/server-groups&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Inspect the default <code>EAP_HOME/domain/configuration/host-primary.xml</code> file. This file configures the host as the primary controller (Domain Controller). There are no server definitions in this file. You will configure the <code>eap1</code> and <code>eap2</code> VMs as host controllers and configure them to point to the domain controller in the next steps. The actual JBoss EAP server instances hosting applications will run on the <code>eap1</code> and <code>eap2</code> VMs.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;domain-controller&gt;
+    &lt;local/&gt;
+&lt;/domain-controller&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Start the domain controller on the <code>controller</code> VM.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ cd $EAP_HOME/bin
+$ ./domain.sh --host-config=host-primary.xml -b 192.168.124.10 -bmanagement 192.168.124.10
+==========================================
+  JBoss Bootstrap Environment
+  JBOSS_HOME: /home/jboss/jboss-eap-8.0
+  JAVA: java
+  JAVA_OPTS: -Xms64m -Xmx512m...
+===========================================
+...
+18:41:56,427 INFO  [org.jboss.as.process.Host Controller.status] (main) WFLYPC0018: Starting process 'Host Controller'
+...
+[Host Controller] 18:41:58,660 INFO  [org.jboss.as] (MSC service thread 1-2) WFLYSRV0049: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) starting
+...
+management interface listening on http://192.168.124.10:9990/management
+[Host Controller] 18:42:05,421 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0053: Admin console listening on http://192.168.124.10:9990 and https://192.168.124.10:-1
+[Host Controller] 18:42:05,522 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) (Host Controller) started in 8951ms - Started 71 of 71 services (14 services are lazy, passive or on-demand) - Host Controller configuration files in use: domain.xml, host-primary.xml</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since the secondary host controllers need to communicate with the domain controller to fetch configuration information, you need to start the primary controller to bind to the IP address of the <code>controller</code> VM rather than <code>localhost</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you do not pass a <code>--host-config</code> argument to the <code>domain.sh</code> script, it will read the <code>EAP_HOME/domain/configuration/host.xml</code> configuration file by default. Similarly, if you do not pass a <code>-b</code> flag with a valid IP address for the VM, it will start and bind to <code>localhost</code>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Log in to the <code>eap1</code> VM as the <code>jboss</code> user. Inspect the <code>EAP_HOME/domain/configuration/host-secondary.xml</code> file. Notice that there are two servers declared. <code>server-one</code> belongs to the <code>main-server-group</code>, and <code>server-two</code> belongs to the <code>other-server-group</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;servers&gt;
+    &lt;server name="server-one" group="main-server-group"/&gt;
+    &lt;server name="server-two" group="other-server-group"&gt;
+        &lt;socket-bindings port-offset="150"/&gt;
+    &lt;/server&gt;
+ &lt;/servers&gt;</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<code>server-two</code> needs to run on a different port to avoid port clashes. In the default configuration, it runs on an offset of <code>150</code>. So <code>server-one</code> will run on port <code>8080</code> (the base port), while <code>server-two</code> will run on port <code>8230</code> (8080+150).
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Before you start the host controller process on <code>eap1</code>, you need to configure a couple of items to ensure that the host controller on <code>eap1</code> can communicate with the domain controller running on the <code>controller</code> VM. First, add the following <code>authentication-client</code> element in the <code>host-secondary.xml</code> file on <code>eap1</code>. Add this block after the <strong>subsystem xmlns="urn:wildfly:elytron:18.0"</strong> and before the <strong>&lt;providers&gt;</strong> element.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">...
+&lt;subsystem xmlns="urn:jboss:domain:core-management:1.0"/&gt;
+&lt;subsystem xmlns="urn:wildfly:elytron:18.0" final-providers="combined-providers" disallowed-providers="OracleUcrypto"&gt;
+&lt;authentication-client&gt;
+  &lt;authentication-configuration name="eap1-hc-auth" authentication-name="eap-domain-admin" realm="ManagementRealm" sasl-mechanism-selector="DIGEST-MD5"&gt;
+    &lt;credential-reference clear-text="redhat123"/&gt;
+  &lt;/authentication-configuration&gt;
+  &lt;authentication-context name="eap1-hc-auth-context"&gt;
+    &lt;match-rule authentication-configuration="eap1-hc-auth"/&gt;
+  &lt;/authentication-context&gt;
+&lt;/authentication-client&gt;
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This XML snippet configured an authentication context for the host controller on <code>eap1</code> to communicate with the domain controller using the management user <code>eap-domain-admin</code> you created earlier on the <code>controller</code> VM. Ensure the that the <code>authentication-name</code> and <code>clear-text</code> values match the username and password of the management user.</p>
+</div>
+</li>
+<li>
+<p>Reference the <code>authentication-context</code> in the <code>domain-controller</code> element. Notice that, where you added <code>local</code> to the domain controller configuration on the <code>controller</code> VM, on <code>eap1</code> you add a <code>remote</code> element and refer to the authentication context you created earlier. Observe the placeholder variables in the <code>static-discovery</code> element for the <code>host</code>, <code>protocol</code>, and <code>port</code>. You will pass the IP address of the domain controller as command line flags to the <code>domain.sh</code> script.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;domain-controller&gt;
+  &lt;remote authentication-context="eap1-hc-auth-context"&gt;
+    &lt;discovery-options&gt;
+      &lt;static-discovery name="primary" protocol="${jboss.domain.primary.protocol:remote+http}" host="${jboss.domain.primary.address}" port="${jboss.domain.primary.port:9990}"/&gt;
+    &lt;/discovery-options&gt;
+  &lt;/remote&gt;
+&lt;/domain-controller&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>On RHEL 9 VMs, for security reasons, only a limited number of ports are opened for access from external users. You need to open port <code>9990</code> on the <code>controller</code> VM to allow the host controllers to connect. First, verify that port 9990 is not open as the <code>root</code> user.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[root@controller ~]# firewall-cmd --list-all
+public (active)
+...
+  interfaces: enp1s0
+  sources:
+  services: cockpit dhcpv6-client ssh
+  ports:
+  protocols:
+...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Open the <code>TCP</code> port <code>9990</code> as the <code>root</code> user.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[root@controller ~]# firewall-cmd --permanent --add-port=9990/tcp
+success
+[root@controller ~]# firewall-cmd --reload
+success</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Verify that port 9990 is open.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[root@controller ~]# firewall-cmd --list-all
+public (active)
+...
+  interfaces: enp1s0
+  sources:
+  services: cockpit dhcpv6-client ssh
+  ports: 9990/tcp
+  protocols:
+...</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Failure to configure the firewall properly will result in failures during host controller start up.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>You can now start the host controller on <code>eap1</code> as the <code>jboss</code> user.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 bin]$ ./domain.sh --host-config=host-secondary.xml -Djboss.host.name=eap1 -Djboss.domain.primary.address=192.168.124.10 -b 192.168.124.11 -bmanagement 192.168.124.11
+...
+[Host Controller] 19:41:42,928 INFO  [org.jboss.as.host.controller] (Controller Boot Thread) WFLYHC0148: Connected to the domain controller at remote+http://192.168.124.10:9990
+[Host Controller] 19:41:43,081 INFO  [org.jboss.as.host.controller] (Controller Boot Thread) WFLYHC0023: Starting server server-one
+19:41:43,406 INFO  [org.jboss.as.process.Server:server-one.status] (ProcessController-threads - 4) WFLYPC0018: Starting process 'Server:server-one'
+...
+19:41:47,408 INFO  [org.jboss.as.process.Server:server-two.status] (ProcessController-threads - 4) WFLYPC0018: Starting process 'Server:server-two'
+[Host Controller] 19:41:54,498 INFO  [org.jboss.as.host.controller] (management task-1) WFLYHC0021: Server [Server:server-two] connected using connection [Channel ID 65dd20f9 (inbound) of Remoting connection 45170f14 to eap1.example.com/192.168.124.11:36742 of endpoint "eap1:MANAGEMENT" &lt;39d6674b&gt;]
+[Host Controller] 19:41:54,597 INFO  [org.jboss.as.host.controller] (server-registration-threads - 1) WFLYHC0020: Registering server server-two
+...
+[Host Controller] 19:41:54,638 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) (Host Controller) started in 19245ms - Started 71 of 72 services (15 services are lazy, passive or on-demand) - Host Controller configuration file in use: host-secondary.xml</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Pass the IP address of the <code>controller</code> VM to <code>-Djboss.domain.primary.address</code> flag. Pass the IP address of the <code>eap1</code> VM to the <code>-b</code> and <code>-bmanagement</code> flags. You must also pass a unique host name to the <code>-Djboss.host.name</code> flag.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If the firewall on the <code>controller</code> VM is not configured correctly, or if there is a network connectivity issue between the domain controller and host controller, you will see errors like the following:
+[Host Controller] Caused by: java.net.ConnectException: WFLYPRT0053: Could not connect to remote+http://192.168.124.10:9990. The connection failed
+&#8230;&#8203;
+[Host Controller] Caused by: java.net.NoRouteToHostException: No route to host
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Switch to the terminal window on the <code>controller</code> VM and confirm you see the following, indicating that the domain controller has registered the host controller on <code>eap1</code> successfully:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-text hljs" data-lang="text">... WFLYHC0019: Registered remote secondary host "eap1", JBoss JBoss EAP 8.0.0.GA (WildFly 21.0.5.Final-redhat-00001)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Log in to the <code>eap2</code> VM as the <code>jboss</code> user. Inspect the EAP_HOME/domain/configuration/host-secondary.xml file. Edit the <code>servers</code> section, and rename the existing server configuration under it as per the following:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;servers&gt;
+  &lt;server name="server-three" group="main-server-group"/&gt;
+    &lt;server name="server-four" group="other-server-group"&gt;
+      &lt;socket-bindings port-offset="150"/&gt;
+    &lt;/server&gt;
+&lt;/servers&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>server-three</code> belongs to the <code>main-server-group</code>, and <code>server-two</code> belongs to the <code>other-server-group</code>. Similar to the configuration on <code>eap1</code>, <code>server-four</code> runs with a port offset of <strong>150</strong>.</p>
+</div>
+</li>
+<li>
+<p>Add the following <code>authentication-client</code> element in the <code>host-secondary.xml</code> file on <code>eap2</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">...
+&lt;subsystem xmlns="urn:jboss:domain:core-management:1.0"/&gt;
+&lt;subsystem xmlns="urn:wildfly:elytron:18.0" final-providers="combined-providers" disallowed-providers="OracleUcrypto"&gt;
+&lt;authentication-client&gt;
+  &lt;authentication-configuration name="eap2-hc-auth" authentication-name="eap-domain-admin" realm="ManagementRealm" sasl-mechanism-selector="DIGEST-MD5"&gt;
+    &lt;credential-reference clear-text="redhat123"/&gt;
+  &lt;/authentication-configuration&gt;
+  &lt;authentication-context name="eap2-hc-auth-context"&gt;
+    &lt;match-rule authentication-configuration="eap2-hc-auth"/&gt;
+  &lt;/authentication-context&gt;
+&lt;/authentication-client&gt;
+...</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This XML snippet configured an authentication context for the host controller on <code>eap2</code> to communicate with the domain controller using the management user <code>eap-domain-admin</code> you created earlier on the <code>controller</code> VM. Ensure the that the <code>authentication-name</code> and <code>clear-text</code> values match the username and password of the management user.</p>
+</div>
+</li>
+<li>
+<p>Reference the <code>authentication-context</code> in the <code>domain-controller</code> element.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;domain-controller&gt;
+  &lt;remote authentication-context="eap2-hc-auth-context"&gt;
+    &lt;discovery-options&gt;
+      &lt;static-discovery name="primary" protocol="${jboss.domain.primary.protocol:remote+http}" host="${jboss.domain.primary.address}" port="${jboss.domain.primary.port:9990}"/&gt;
+    &lt;/discovery-options&gt;
+  &lt;/remote&gt;
+&lt;/domain-controller&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Start the host controller on <code>eap2</code> as the <code>jboss</code> user.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap2 bin]$ ./domain.sh --host-config=host-secondary.xml -Djboss.host.name=eap2 -Djboss.domain.primary.address=192.168.124.10 -b 192.168.124.12 -bmanagement 192.168.124.12
+...
+08:55:12,128 INFO  [org.jboss.as.process.Host Controller.status] (main) WFLYPC0018: Starting process 'Host Controller'
+[Host Controller] 08:55:13,429 INFO  [org.jboss.as] (MSC service thread 1-2) WFLYSRV0049: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) starting
+...
+[Host Controller] 08:55:19,640 INFO  [org.jboss.as.host.controller] (Controller Boot Thread) WFLYHC0148: Connected to the domain controller at remote+http://192.168.124.10:9990
+[Host Controller] 08:55:19,795 INFO  [org.jboss.as.host.controller] (Controller Boot Thread) WFLYHC0023: Starting server server-three
+08:55:20,117 INFO  [org.jboss.as.process.Server:server-three.status] (ProcessController-threads - 3) WFLYPC0018: Starting process 'Server:server-three'
+...
+08:55:23,968 INFO  [org.jboss.as.process.Server:server-four.status] (ProcessController-threads - 3) WFLYPC0018: Starting process 'Server:server-four'
+...
+[Host Controller] 08:55:30,618 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0062: Http management interface listening on http://192.168.124.12:9990/management and https://192.168.124.12:-1/management
+...
+[Host Controller] 08:55:30,625 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) (Host Controller) started in 18373ms - Started 71 of 72 services (15 services are lazy, passive or on-demand) - Host Controller configuration file in use: host-secondary.xml</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Pass the IP address of the <code>controller</code> VM to <code>-Djboss.domain.primary.address</code> flag. Pass the IP address of the <code>eap2</code> VM to the <code>-b</code> and <code>-bmanagement</code> flags. You must also pass a unique host name to the <code>-Djboss.host.name</code> flag.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Observe the terminal windows where you started the domain controller on <code>controller</code> VM and verify that the host controller on <code>eap2</code> has been registered.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">...
+[Host Controller] 08:35:34,792 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0025: JBoss EAP 8.0.0.GA (WildFly Core 21.0.5.Final-redhat-00001) (Host Controller) started in 9543ms - Started 71 of 71 services (14 services are lazy, passive or on-demand) - Host Controller configuration files in use: domain.xml, host-primary.xml
+[Host Controller] 08:41:09,523 INFO  [org.jboss.as.domain.controller] (Host Controller Service Threads - 22) WFLYHC0019: Registered remote secondary host "eap1", JBoss JBoss EAP 8.0.0.GA (WildFly 21.0.5.Final-redhat-00001)
+[Host Controller] 08:55:19,633 INFO  [org.jboss.as.domain.controller] (Host Controller Service Threads - 22) WFLYHC0019: Registered remote secondary host "eap2", JBoss JBoss EAP 8.0.0.GA (WildFly 21.0.5.Final-redhat-00001)</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Your managed domain is configured and started. Login to web console to view and manage the domain configuration. Navigate to <a href="http://&lt;controller_ip_address&gt;:9990" class="bare">http://&lt;controller_ip_address&gt;:9990</a> and log in as the <code>eap-domain-admin</code> user with password <code>redhat123</code>.</p>
+</li>
+<li>
+<p>Click on <code>Runtime &gt; Topology</code> to see the topology of your managed domain.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/1-eap-domain-topology.png" alt="1 eap domain topology">
+</div>
+<div class="title">Figure 2. Managed Domain Topology</div>
+</div>
+</li>
+<li>
+<p>Click on <code>Hosts</code> in the <code>Browse By</code> column to view the hosts and the servers running on them.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/2-hosts-view.png" alt="2 hosts view">
+</div>
+<div class="title">Figure 3. Hosts View</div>
+</div>
+</li>
+<li>
+<p>Similarly, click on <code>Server Groups</code> to view the server groups and the servers that are part of them.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/3-sg-view.png" alt="3 sg view">
+</div>
+<div class="title">Figure 4. Server Groups View</div>
+</div>
+</li>
+<li>
+<p>You can click on any of the servers in the <code>Server Groups</code> view, and manage their lifecycle (start, stop, restart).</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/4-server-lifecycle.png" alt="4 server lifecycle">
+</div>
+<div class="title">Figure 5. Manage Server Lifecycle</div>
+</div>
+</li>
+<li>
+<p>(Optional step) You can also update and apply patches to the JBoss EAP servers running on the hosts. In the top navigation bar of the EAP web console, click on <code>Update Manager &gt; eap1 &gt; Updates</code>. Click on the <code>Installation update methods</code> drop-down and select <code>Online updates</code> to check if any updates are available. If updates are available, apply them and the server instances will be restarted after the update.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/5-update-manager.png" alt="5 update manager">
+</div>
+<div class="title">Figure 6. Update Manager in Domain Mode</div>
+</div>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>You have successfully set up an EAP managed domain. In the next section, you will learn how to deploy applications to the server groups in a managed domain.</p>
+</div>
+</div>
+</div>
 </div>
 <nav class="pagination">
-  <span class="prev"><a href="index.html">Domain Mode</a></span>
-  <span class="next"><a href="jvm-config.html">JVM Configuration</a></span>
+  <span class="prev"><a href="index.html">JBoss EAP Domain Mode</a></span>
+  <span class="next"><a href="domain-deployment.html">Deploying Applications</a></span>
 </nav>
 </article>
   </div>
