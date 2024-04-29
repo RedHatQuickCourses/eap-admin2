@@ -1,3 +1,110 @@
-= JVM Configuration
+= JVM Configuration for JBoss EAP
+:navtitle: JVM Configuration
 
-This is _Section 1_ of _Chapter 2_ in the *hello* quick course....
+JBoss EAP is written in Java, and runs on the Java Virtual Machine (JVM). An EAP administrator should be able to configure the settings of the underlying JVM to ensure optimal performance of applications deployed on JBoss EAP instances.
+
+You can pass arguments to the *java* program to configure the JVM. There are hundreds of JVM options available to tune the behaviour of the JVM. The following list is a small subset of commonly tuned parameters for mostly backend services like application servers:
+
+* *-Xms* is used to denote the minimum heap size. It must be less than or equal to the maximum
+heap size.
+* *-Xmx* defines the maximum heap size. If the application allocates memory greater than the
+maximum heap size, then the JVM process triggers an out-of-memory (OOM) error.
+* *-XX:MaxMetaspaceSize* defines the maximum size of the metaspace region.
+* *-XX:NewSize* defines the size of the eden generation.
+* *-Xss* or *-XX:ThreadStackSize* defines the size of each Java thread stack.
+
+Consult the references section for more information on the JVM parameters and other aspects of JVM Tuning.
+
+JVM configuration is different for JBoss EAP standalone mode and managed domains.
+
+== JVM Configuration in Standalone Mode
+
+The JVM memory settings for a standalone server are defined in the `EAP_HOME/bin/standalone.conf` file. The JVM settings defined in the *JAVA_OPTS* variable are passed to the JVM process that is running the standalone server.
+
+[source,bash]
+----
+if [ "x$JAVA_OPTS" = "x" ]; then
+   JAVA_OPTS="$JBOSS_JAVA_SIZING -Djava.net.preferIPv4Stack=true"
+   JAVA_OPTS="$JAVA_OPTS -Djboss.modules.system.pkgs=$JBOSS_MODULES_SYSTEM_PKGS -Djava.awt.headless=true"
+else
+...
+fi
+----
+
+Within the double quotes of the `JAVA_OPTS` variable, you can edit, add, or delete any of the
+settings regarding the JVM memory and garbage collection options for your standalone server.
+Changes to the JVM settings in `standalone.conf` require a server restart.
+
+== JVM Configuration in a Managed Domain
+
+In the case of a managed domain, the host controller process starts EAP server instances as per the domain controller configuration policies. The JVM options for each individual server can be configured at three different
+levels:
+
+[unordered.stack]
+Host Controller Level:: The *<jvm>* section within `host.xml`
+Server Group Level:: The *<server-group>* section in `domain.xml`
+Server level:: The *<server>* section within `host.xml`
+
+IMPORTANT: Settings at the lower levels of the hierarchy override the settings at higher levels. For example, setting  JVM parameters at the individual server level will override any settings at the server group, or the host controller level.
+
+WARNING: There is a `EAP_HOME/bin/domain.conf` file in the same location as the `standalone.conf` file. The JVM memory options in `domain.conf` refer to the JVM settings for the Java process that is running the host controller, *NOT* the individual JBoss EAP servers within that host!
+
+You can configure the JVM settings for servers in a managed domain from the EAP web console at `Runtime > Hosts` or at `Runtime > Server Groups` sections.
+
+image::jvm-hosts.png[title=Configure JVM at Host Level]
+
+image::jvm-server-groups.png[title=Configure JVM at Server Group Level]
+
+You can also use the EAP CLI to configure the JVM settings. Consult the product documentation for the exact CLI commands.
+
+== References
+
+* https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html-single/performance_tuning_guide/index#jvm_tuning[JVM Tuning]
+* https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_jvm_settings#doc-wrapper[Configuring JVM Settings]
+
+
+== Exercise: JVM Configuration in a Managed Domain
+
+=== Pre-requisites
+
+* You must have set up a managed domain of JBoss EAP servers and should have created a management user that can log in to the EAP web console or the EAP CLI.
+
+=== Steps
+
+. Log in to the EAP web console as a domain administrator user (If you completed the previous sections, then you should log in as the `eap-domain-admin` user).
+
+. Click `Runtime > Hosts > eap1`. Click the `View` button next to `eap1` to view the settings for the host.
++
+image::host-config-view.png[title=Configure Host Level Settings]
+
+. In the `eap1` Host Controller page, click `JVMs` in the left sidebar.
+
+. There should a single `default` entry in the JVM list page. Click on `default` to view the settings. It has a default heap size of `64m`, maximum heap size of `256m`, and JVM option `-server, -XX:MetaspaceSize=96m, -XX:MaxMetaspaceSize=256m`
+
+. Click `Add` to add a new JVM configuration. In the `Add JVM` dialog that pops up, enter `myeap1jvm` as the name and click `Add`.
+
+. Select the `myeap1jvm` and then click `Edit`. Enter `512m` in the `Max Heap Size` field and click `Save`.
+
+. Click the `Back` link to go back to the `Runtime` view. You need to restart the server instances running on the host `eap1` for your JVM changes to take effect. Click `Runtime > Hosts> eap1 > server-one`. Click the `View` button next to `server-one` and then click `Restart` to restart the JVM process for `server-one`.
+
+. Wait for a few minutes while `server-one` is restarted. After the server is started (indicated by a green tick mark in the web console), log in to the `eap1` VM using SSH. Run the following command to check the startup parameters for `server-one`
++
+[source,bash]
+----
+[jboss@eap1 ~]$ ps ax | grep server-one
+/usr/lib/jvm/java-17-openjdk-17.0.6.0.10-3.el9.x86_64/bin/java -D[Server:server-one] -D[pcid:175070110] -Xms1000m -Xmx1000m
+----
+
+. Some settings are inherited from the host level settings, but the *-Xmx* argument is *1000m* instead of the *512m* you configured at the host level. Can you guess why? [Hint: JVM settings at lower levels of the hierarchy override values set at higher levels].
+
+. Click `Runtime > Server Groups > main-server-group`. Click the `View` button next to `main-server-group` to open the Server Groups configuration page. Click `JVMs` in the left sidebar to view the JVM configuration for the server group. Click on `default` to view the default settings.
+
+. Observe that minimum and maximum heap size is set to *1000m*. These values override any settings at the host level.
+
+== Optional Challenge Exercise
+
+. Edit the heap settings at the server group level. Restart the server instances and observe by running the `ps ax` command if your new settings are applied
+
+. Edit the JVM server configuration for one of the servers (server-one, server-two etc) and verify that values set at the individual server level override values from both the host and the server group level.
+
+. Try connecting to the domain controller using the EAP CLI and configure JVM settings using EAP CLI commands. Consult the product docs at https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_jvm_settings#jvm_host_controller for examples. [Hint: Use tab-completion in the EAP CLI to explore the commands and operations available in a managed domain.]

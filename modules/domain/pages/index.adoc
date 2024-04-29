@@ -1,3 +1,9 @@
-= Domain Mode
+= JBoss EAP Domain Mode
 
-This is the home page of _Chapter 2_ in the *hello* quick course....
+JBoss EAP 8 can operate in two modes:
+
+[unordered.stack]
+Standalone Mode:: Each instance is managed "standalone", that is individually. Each instance has its own web console and unique management credentials.
+Domain Mode:: Multiple instances of JBoss EAP, running on the same server or multiple servers, are managed from a central point of control. There is only one web console, from which you can configure and manage the lifecycle of different EAP instances.
+
+This chapter covers setting up JBoss EAP in _Domain Mode_.
