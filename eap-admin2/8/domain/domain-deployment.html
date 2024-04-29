@@ -184,6 +184,19 @@
 </aside>
 <article class="doc">
 <h1 class="page">Deploying Applications in a Managed Domain</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In <em>standalone</em> mode, you deploy applications scoped to a particular instance. You have to deploy the applications individually on <em>ALL</em> instances. In <em>domain</em> mode, you have the flexibility of deploying applications to multiple server instances from a central control point.</p>
+</div>
+<div class="paragraph">
+<p>Deployments in domain mode are scoped to the <em>Server Group</em>. In large production roll outs, it is very common to create one or more managed domains of JBoss EAP servers, create a server group for every unique application, and then assign deployments to these server groups. A server groups will contain one or more server instances <em>spread across multiple hosts</em> for high availability and redundancy.</p>
+</div>
+<div class="paragraph">
+<p>You typically upload deployments (WAR, JAR or EAR files) to a staging area using the web console or the CLI, and then deploy the applications to specific server groups. An application can be deployed to more than one server group.</p>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_exercise_deploying_applications_in_a_managed_domain"><a class="anchor" href="#_exercise_deploying_applications_in_a_managed_domain"></a>Exercise: Deploying Applications in a Managed Domain</h2>
 <div class="sectionbody">
