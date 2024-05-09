@@ -1,3 +1,3 @@
 = Clustering and High Availability
 
-This is the home page of _Chapter 3_ in the *hello* quick course....
+This chapter deals with running multiple instances of JBoss EAP 8 and clustering them for high availability and redundancy. It mostly focuses on clustering _standalone_ instances. We also cover load balancing requests between JBoss EAP 8 instances using the _undertow_ reverse proxy.

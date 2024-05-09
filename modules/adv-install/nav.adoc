@@ -1,4 +1,3 @@
 * xref:index.adoc[]
 ** xref:response-files.adoc[]
 ** xref:adv-patching.adoc[]
-** xref:ansible-middleware.adoc[]
