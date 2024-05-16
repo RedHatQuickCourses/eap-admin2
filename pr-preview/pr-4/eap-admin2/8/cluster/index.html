@@ -183,6 +183,9 @@
 <div class="paragraph">
 <p>This chapter deals with running multiple instances of JBoss EAP 8 and clustering them for high availability and redundancy. It mostly focuses on clustering <em>standalone</em> instances. We also cover load balancing requests between JBoss EAP 8 instances using the <em>undertow</em> reverse proxy.</p>
 </div>
+<div class="paragraph">
+<p>We primarily focus on clustering in <em>standalone</em> mode in this chapter. The process for clustering instances running in a managed domain is similar (Just ensure to configure port offsets for the instances correctly and ensure the offset ports are allowed to receive traffic by opening the appropriate firewall ports). This configuation is left as an exercise and a challenge to the student.</p>
+</div>
 <nav class="pagination">
   <span class="prev"><a href="../domain/jvm-config.html">JVM Configuration</a></span>
   <span class="next"><a href="standalone-cluster-udp.html">Standalone Mode Clustering (UDP)</a></span>
