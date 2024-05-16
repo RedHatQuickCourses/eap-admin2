@@ -179,30 +179,53 @@ Repeat the same commands to deploy the WAR file on `eap2`.
 ```
 
 . Access the test application on `eap1`. Using a web browser, navigate to the public IP of `eap1` (http://192.168.124.11:8080/cluster). You should see the home page of the application. It prints the session ID value along with a simple counter that increments on every page hit. It also shows which node servers the request (This will become relevant when you introduce a load balancer in the next section and split the traffic between the two nodes).
++
+image::cluster-app-browser.png[Cluster Test App in Browser]
 
-. The idea behind clustering is to replicate the HTTP session objects between the cluster nodes. Since there is no load balancer running with _session stickiness_ enabled, we need to test it manually from the command line using the `curl` command and passing the session value as HTTP header (as cookies) values. JBoss EAP creates a unique cookie for every user (called *JSESSIOND*), that it uses to track HTTP sessions. Open the browser's DevTools pane (Ctrl + Shift + C for Chrome, then go to `Application > Cookies > http://192.168.124.11:8080`) and find the *JSESSIONID* cookie value. Copy this value to the clipboard. TODO: Add a screenshot here....
+. The idea behind clustering is to replicate the HTTP session objects between the cluster nodes. Since there is no load balancer running with _session stickiness_ enabled, we need to test it manually from the command line using the `curl` command and passing the session value as HTTP header (as cookies) values. JBoss EAP creates a unique cookie for every user (called *JSESSIOND*), that it uses to track HTTP sessions. Open the browser's DevTools pane (Ctrl + Shift + C for Chrome, then go to `Application > Cookies > http://192.168.124.11:8080`) and find the *JSESSIONID* cookie value. Right click on the value, select `Edit Value`, and then copy this value to the clipboard. 
++
+image::jsession-id-value.png[Grab the JSESSIONID Cookie Value from DevTools]
 +
 NOTE: You cannot use a browser to test this scenario because there is no way to enable or simulate session stickiness. The browser will create a unique session ID for each of the nodes and you will not be able to visualize the replication and failover.
 
-. Use the `curl` command to send requests to the application and increment the counter. Replace the `Cookie:` value with your own unique *JSESSIONID* value. TODO: Add curl output...
+. Use the `curl` command to send requests to the application and increment the counter. Replace the `Cookie:` value with your own unique *JSESSIONID* value.
 +
 ```bash
-$ curl -v -XPOST http://192.168.124.11:8080/cluster \
+$ curl http://192.168.124.11:8080/cluster/cluster \
   --header "Cookie: JSESSIONID=HxM_z7c2tbtHdpzo0JnYkV5jNZWEfHvxrP0-bja-.eap1"
+...
+<h1>Cluster Demo App</h1>
+<p>Session ID: ohWxpNiozUE7xG9q3cGIAmkthrsRdtf8EJrZwntg</p>
+<p>Visit Count: 2</p>
+<p>I am running on host eap1.example.com (192.168.124.11)</p>
+...
+```
++
+Run this `curl` command a few more times and observe the `Visit Count` value increasing by one for every request.
+
+. The session ID created on `eap1` should have been replicated to all members of the cluster. To verify this behavior, press `Ctrl + C` in the `eap1` terminal window to stop the `eap1` node and eject it from the cluster. Observe the logs in the terminal window on `eap2`. The cluster has noticed that `eap1` is no longer available and it rebalances.
++
+```
+...
+ISPN100001: Node eap1 left the cluster
+ISPN100007: After merge (or coordinator change), recovered members [eap2]...
+...
 ```
 
-. The session ID created on `eap1` should have been replicated to all members of the cluster. To verify this behavior, press `Ctrl + C` in the `eap1` terminal window to stop the `eap1` node and eject it from the cluster. Observe the logs in the terminal window on `eap2`. The cluster has noticed that `eap1` is no longer available and it rebalances. TODO: Add logs here when you kill eap1...
-
-. Use the `curl` command to send requests to `eap2`. Replace the `Cookie:` value with the same *JSESSIONID* value that you used for sending requests to `eap1`. TODO: Add curl output...
+. Use the `curl` command to send requests to `eap2`. Replace the `Cookie:` value with the same *JSESSIONID* value that you used for sending requests to `eap1`.
 +
 ```bash
-$ curl -v -XPOST http://192.168.124.12:8080/cluster \
+$ curl http://192.168.124.12:8080/cluster/cluster \
   --header "Cookie: JSESSIONID=HxM_z7c2tbtHdpzo0JnYkV5jNZWEfHvxrP0-bja-.eap1"
+<h1>Cluster Demo App</h1>
+<p>Session ID: ZFf88oPFpFjtMX12TEbVuPJCHDpPO4Dcrj9rm4_6</p>
+<p>Visit Count: 3</p>
+<p>I am running on host eap2.example.com (192.168.124.12)</p>
 ```
 
-. Observe how the counter value is incremented, and not reset to 0. This is because the counter value (which has been stored in the HTTP session) has been replicated to `eap2`. Send a few more requests and notice the counter value is incremented by 1 for every request. TODO: curl output needed....
+. Observe how the counter value is incremented, and not reset to zero. This is because the counter value (which has been stored in the HTTP session) has been replicated to `eap2`. Send a few more requests and notice the counter value is incremented by 1 for every request.
 
-. TODO: Test fail back. restart eap1 and kill eap2. see if counter value persists...
+. Optional: Test failback. First, restart `eap1` and let it join the cluster. Now, kill `eap2` and re-test the cluster application using curl, but this time send requests to `eap1`. Observe that the counter value is not reset, instead it is incremented by one as expected.
 
 === Troubleshooting Tips
 

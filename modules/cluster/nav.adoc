@@ -1,4 +1,4 @@
 * xref:index.adoc[]
-** xref:standalone-cluster.adoc[]
-** xref:domain-cluster.adoc[]
+** xref:standalone-cluster-udp.adoc[]
+** xref:standalone-cluster-tcp.adoc[]
 ** xref:load-balancing.adoc[]
