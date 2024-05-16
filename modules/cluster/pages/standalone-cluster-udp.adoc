@@ -10,15 +10,11 @@
 
 === Pre-requisites
 
-* For the exercises in this chapter, you will need *three (3)* servers or VMs with JBoss EAP 8.0 installed on them. Your IP addresses maybe different. Replace the values according to your set up.
+* For this exercise, you will need *two (2)* servers or VMs with JBoss EAP 8.0 installed on them. Your IP addresses maybe different. Replace the values according to your set up.
 +
 [cols="1,1,1"]
 |===
 |*Host*|*IP Address*|*Role*
-|`controller.example.com`
-|`192.168.124.10`
-|`Load Balancer`
-
 |`eap1.example.com`
 |`192.168.124.11`
 |`Cluster Node`
@@ -28,7 +24,7 @@
 |`Cluster Node`
 |===
 
-* Install JBoss EAP 8.0 on all three servers. We recommend using the zip file installation method and installing it in a separate directory to prevent overwriting the configuration of the instance that you have used in previous exercises. For all three VMs, create a user named `jboss` that will run the JBoss EAP instance.
+* Install JBoss EAP 8.0 on both servers. We recommend using the zip file installation method and installing it in a separate directory to prevent overwriting the configuration of the instance that you have used in previous exercises. For all the VMs, create a user named `jboss` that will run the JBoss EAP instance.
 
 WARNING: This chapter and the following chapters involve a lot changes to the XML configuration files in JBoss EAP. We recommend you backup the configuration files after each exercise so that you have a record of your changes.
 
