@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Enabling or Disabling the EAP Management (Web) Console :: Red Hat JBoss EAP Administration II</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="tls-console.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img
+          src="../../../_/img/redhat-logo.png"
+          height="40px"
+          alt="Red Hat"
+        /></a>
+      <a
+        class="navbar-item"
+        style="font-size: 24px; color: white"
+        href="../../.."
+      >Red Hat JBoss EAP Administration II</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a
+          class="navbar-item"
+          href="https://github.com/RedHatQuickCourses/eap-admin2/issues"
+          target="_blank"
+        >Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="eap-admin2" data-version="8">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat JBoss EAP Administration II</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../adv-install/index.html">Advanced Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/response-files.html">Automated Installer Script</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/adv-patching.html">Patches and Updates</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../domain/index.html">JBoss EAP Domain Mode</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/domain-mode.html">JBoss EAP Domain Mode Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/domain-deployment.html">Deploying Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/jvm-config.html">JVM Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../cluster/index.html">Clustering and High Availability</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-udp.html">Standalone Mode Clustering (UDP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-tcp.html">Standalone Mode Clustering (TCP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/load-balancing.html">Load Balancing JBoss EAP Instances</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Securing EAP</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="eap-security.html">Enabling or Disabling the EAP Management (Web) Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tls-console.html">Enabling TLS/SSL in the EAP Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="sso-console.html">EAP Web Console Single Sign-On using OIDC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../openshift/index.html">EAP on OpenShift</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../openshift/eap-container.html">EAP Container</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../openshift/deploy-openshift.html">Deploy EAP Applications on OpenShift</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat JBoss EAP Administration II</span>
+    <span class="version">8</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat JBoss EAP Administration II</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">8</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat JBoss EAP Administration II</a></li>
+    <li><a href="index.html">Securing EAP</a></li>
+    <li><a href="eap-security.html">Enabling or Disabling the EAP Management (Web) Console</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Enabling or Disabling the EAP Management (Web) Console</h1>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/getting_started_with_management_console/index#enable-or-disable-the-management-console_default" target="_blank" rel="noopener">Enable or Disable EAP Management Console</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_enabling_or_disabling_the_web_console"><a class="anchor" href="#_exercise_enabling_or_disabling_the_web_console"></a>Exercise: Enabling or Disabling the Web Console</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start JBoss EAP as the <code>jboss</code> user</p>
+</li>
+<li>
+<p>Connect to the JBoss EAP CLI:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 bin]$ ./jboss-cli.sh --connect
+[standalone@localhost:9990 /]</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Execute the following EAP CLI command to disable the EAP web console:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9990 /] /core-service=management/management-interface=http-interface:write-attribute(name=console-enabled,value=false)
+{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reload the EAP server for the configuration to take effect:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9990 /] :reload
+{
+    "outcome" =&gt; "success",
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Navigate to URL of the EAP web console. In my case, <a href="http://eap1:9990" class="bare">http://eap1:9990</a>. You will be shown a message saying that the web console is not enabled.</p>
+</li>
+<li>
+<p>To re-enable the EAP web console, run the following commands:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9990 /] /core-service=management/management-interface=http-interface:write-attribute(name=console-enabled,value=true)
+[standalone@localhost:9990 /] :reload</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To verify that the EAP web console is available, navigate to <a href="http://eap1:9990" class="bare">http://eap1:9990</a> and log in using a management user.</p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Securing EAP</a></span>
+  <span class="next"><a href="tls-console.html">Enabling TLS/SSL in the EAP Web Console</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

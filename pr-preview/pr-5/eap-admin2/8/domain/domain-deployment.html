@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Deploying Applications in a Managed Domain :: Red Hat JBoss EAP Administration II</title>
+    <link rel="prev" href="domain-mode.html">
+    <link rel="next" href="jvm-config.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img
+          src="../../../_/img/redhat-logo.png"
+          height="40px"
+          alt="Red Hat"
+        /></a>
+      <a
+        class="navbar-item"
+        style="font-size: 24px; color: white"
+        href="../../.."
+      >Red Hat JBoss EAP Administration II</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a
+          class="navbar-item"
+          href="https://github.com/RedHatQuickCourses/eap-admin2/issues"
+          target="_blank"
+        >Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="eap-admin2" data-version="8">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat JBoss EAP Administration II</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../adv-install/index.html">Advanced Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/response-files.html">Automated Installer Script</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/adv-patching.html">Patches and Updates</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">JBoss EAP Domain Mode</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="domain-mode.html">JBoss EAP Domain Mode Configuration</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="domain-deployment.html">Deploying Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="jvm-config.html">JVM Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../cluster/index.html">Clustering and High Availability</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-udp.html">Standalone Mode Clustering (UDP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-tcp.html">Standalone Mode Clustering (TCP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/load-balancing.html">Load Balancing JBoss EAP Instances</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../security/index.html">Securing EAP</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/eap-security.html">Enabling or Disabling the EAP Management (Web) Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/tls-console.html">Enabling TLS/SSL in the EAP Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/sso-console.html">EAP Web Console Single Sign-On using OIDC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../openshift/index.html">EAP on OpenShift</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../openshift/eap-container.html">EAP Container</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../openshift/deploy-openshift.html">Deploy EAP Applications on OpenShift</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat JBoss EAP Administration II</span>
+    <span class="version">8</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat JBoss EAP Administration II</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">8</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat JBoss EAP Administration II</a></li>
+    <li><a href="index.html">JBoss EAP Domain Mode</a></li>
+    <li><a href="domain-deployment.html">Deploying Applications</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Deploying Applications in a Managed Domain</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In <em>standalone</em> mode, you deploy applications scoped to a particular instance. You have to deploy the applications individually on <em>ALL</em> instances. In <em>domain</em> mode, you have the flexibility of deploying applications to multiple server instances from a central control point.</p>
+</div>
+<div class="paragraph">
+<p>Deployments in domain mode are scoped to the <em>Server Group</em>. In large production roll outs, it is very common to create one or more managed domains of JBoss EAP servers, create a server group for every unique application, and then assign deployments to these server groups. A server groups will contain one or more server instances <em>spread across multiple hosts</em> for high availability and redundancy.</p>
+</div>
+<div class="paragraph">
+<p>You typically upload deployments (WAR, JAR or EAR files) to a staging area using the web console or the CLI, and then deploy the applications to specific server groups. An application can be deployed to more than one server group.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_deploying_applications_in_a_managed_domain"><a class="anchor" href="#_exercise_deploying_applications_in_a_managed_domain"></a>Exercise: Deploying Applications in a Managed Domain</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>You must have set up a managed domain consisting of a domain controller and 2 host controllers. There must be at least two server groups created each with two servers assigned to them.</p>
+</li>
+<li>
+<p>Download the two applications (WAR files) we will deploy in this exercise:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/RedHatQuickCourses/eap-qc-apps/releases/download/eap8-lp/helloworld.war" class="bare">https://github.com/RedHatQuickCourses/eap-qc-apps/releases/download/eap8-lp/helloworld.war</a></p>
+</li>
+<li>
+<p><a href="https://github.com/RedHatQuickCourses/eap-qc-apps/releases/download/eap8-lp/temperature-converter.war" class="bare">https://github.com/RedHatQuickCourses/eap-qc-apps/releases/download/eap8-lp/temperature-converter.war</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>(Optional) The source code for both of these applications is available at <a href="https://github.com/RedHatQuickCourses/eap-qc-apps/tree/main/apps" class="bare">https://github.com/RedHatQuickCourses/eap-qc-apps/tree/main/apps</a>. To build the WAR files from source:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Install Apache Maven (<a href="https://maven.apache.org" class="bare">https://maven.apache.org</a>) v3.9 or higher</p>
+</li>
+<li>
+<p>Install a Java 17 development environment</p>
+</li>
+<li>
+<p>Change to the directory where you cloned the source code for the apps and run <code>mvn clean package</code></p>
+</li>
+<li>
+<p>The WAR file is built and will be available under the <code>target</code> folder of the application source directory</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_steps"><a class="anchor" href="#_steps"></a>Steps</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Log in to the EAP web console as the <code>eap-domain-admin</code> user.</p>
+</li>
+<li>
+<p>Click <code>Deployments</code> to view the deployments for this domain. This is the place where you can upload application WAR files. You can then assign these uploaded WAR files to one or more server groups in a managed domain.</p>
+</li>
+<li>
+<p>Click <code>Content Repository</code> in the <code>Deployments</code> page. Click the <code>Add</code> drop-down in the <code>Content</code> column, and then click <code>Upload Content</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/content-repo.png" alt="Content Repository for a Managed Domain">
+</div>
+</div>
+</li>
+<li>
+<p>In the <code>Add Content</code> screen, click on <code>Choose a file or drag it here</code> and upload the <code>helloworld</code> WAR file you downloaded in the pre-requisites section. Click <code>Next</code> and then <code>Finish</code>. Once the file is uploaded and you see a <code>Upload successful</code> message, click <code>Close</code>.</p>
+</li>
+<li>
+<p>Repeat the previous step to upload the <code>temperature-converter.war</code> file. You should now see two entries in the <code>Content</code> column of the <code>Deployments</code> page.</p>
+<div class="paragraph">
+<p><span class="image"><img src="_images/uploaded-apps.png" alt="Uploaded Content for the Domain"></span></p>
+</div>
+</li>
+<li>
+<p>In a managed domain, you always deploy applications to a server group and not to individual servers. You can deploy applications using the web console in two ways. Click on <code>Content Repository</code> and select your WAR file in the <code>Content</code> column. Expand the <code>View</code> drop-down and click <code>Deploy</code>. You can also click on <code>Server Groups</code>, and then select the group in the <code>Server Group</code> column. In the <code>Deployment</code> column, click the <code>Add</code> button and then select <code>Upload Deployment</code>. In both cases, you will see a screen similar to below, where you can select one or more groups to deploy the application.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/deploy-to-group.png" alt="Deploy Application to Server Group">
+</div>
+</div>
+</li>
+<li>
+<p>For the <code>helloworld.war</code>, select the <code>main-server-group</code> and click <code>Deploy</code>. After some time, you should see a success message indicating that the application was deployed.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/deploy-success.png" alt="Deployed Application">
+</div>
+</div>
+</li>
+<li>
+<p>Repeat the above steps and deploy the <code>temperature-converter.war</code> application to the <code>other-server-group</code>.</p>
+</li>
+<li>
+<p>You can now switch to the <code>Server Groups</code> view in the <code>Deployments</code> page and select the groups in the <code>Server Group</code> column to see the applications deployed in the group.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/group-deploy-view.png" alt="Viewing Applications Deployed by Server Group">
+</div>
+</div>
+</li>
+<li>
+<p>Click on <code>Server Groups &gt; main-server-group &gt; helloworld.war</code> to view the attributes of the deployed application. Recall that you had configured the <code>main-server-group</code> to contain <code>server-one</code> and <code>server-three</code>. These two servers are spread across different hosts for redundancy and fail over. Click on the <code>/helloworld</code> link next to <code>Context Root</code>, and open it in a new tab</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/hello-app.png" alt="Hello World Application">
+</div>
+</div>
+</li>
+<li>
+<p>You should see the output of the <code>helloworld</code> application displayed in the web page. It prints some details about the host and port it is running, the current date and the server group.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/hello-app-output-main.png" alt="Hello World Application on server-one">
+</div>
+</div>
+</li>
+<li>
+<p>On systems where firewalls are enabled (RHEL 9, Fedora), you will not see any output. You need to open up ports <code>8080</code> and <code>8230</code> on both <code>eap1</code> and <code>eap2</code> VMs. Execute the below commands on <strong>BOTH</strong> VMs:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[root@eap1] firewall-cmd --permanent --add-port=8080/tcp
+success
+[root@eap1] firewall-cmd --permanent --add-port=8230/tcp
+success
+[root@eap1] firewall-cmd --reload
+success</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Now navigate to <a href="http://ip_of_eap2:8080/helloworld" class="bare">http://ip_of_eap2:8080/helloworld</a> in a new tab on your browser and observe that the same application should show similar output, but this time it shows a different host and port.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/hello-app-output-other.png" alt="Hello World Application on server-three">
+</div>
+</div>
+</li>
+<li>
+<p>Next, click on <code>Server Groups &gt; other-server-group &gt; temperature-converter.war</code>, and then click the link next to <code>Context Root</code>. Observe that the port is <code>8230</code>, a value that <code>150</code> greater than the base port <code>8080</code> as per your domain configuration. You should see the temperature converter&#8217;s input form. Try entering different values and convert between celsius and fahrenheit.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/temp-output-other.png" alt="Temperature Converter Application">
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can see the same output when you navigate to <a href="http://ip_of_eap2:8230/temperature-converter" class="bare">http://ip_of_eap2:8230/temperature-converter</a>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Remember to open up firewall ports 8080 and 8230 on the eap2 VM to ensure application output
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="domain-mode.html">JBoss EAP Domain Mode Configuration</a></span>
+  <span class="next"><a href="jvm-config.html">JVM Configuration</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
