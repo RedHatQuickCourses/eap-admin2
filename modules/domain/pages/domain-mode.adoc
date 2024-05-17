@@ -55,7 +55,7 @@ In this exercise, you will set up a JBoss EAP Managed Domain consisting of three
 |`Host Controller`
 |===
 
-* Install JBoss EAP 8.0 on all three servers. We recommend using the zip file installation method and installing it in a separate directory to overwrite the configuration of the standalone instance that you have used in previous exercises. For all three VMs, create a user named `jboss` that will run the JBoss EAP instance.
+* Install JBoss EAP 8.0 on all three servers. We recommend using the zip file installation method and installing it in a separate directory to prevent overwriting the configuration of the standalone instance that you have used in previous exercises. For all three VMs, create a user named `jboss` that will run the JBoss EAP instance.
 
 === Steps
 

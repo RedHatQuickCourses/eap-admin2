@@ -1,0 +1,274 @@
+= Standalone Mode Clustering (UDP)
+
+== References
+
+* https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_high_availability#intro_to_ha[Configuring High Availability in JBoss EAP]
+* https://access.redhat.com/solutions/46373[Cluster Testing Application]
+* https://access.redhat.com/solutions/195283[Testing JBoss EAP replication without load balancers or web servers]
+
+== Exercise: Clustering JBoss EAP 8 instances in Standalone Mode (UDP)
+
+=== Pre-requisites
+
+* For this exercise, you will need *two (2)* servers or VMs with JBoss EAP 8.0 installed on them. Your IP addresses maybe different. Replace the values according to your set up.
++
+[cols="1,1,1"]
+|===
+|*Host*|*IP Address*|*Role*
+|`eap1.example.com`
+|`192.168.124.11`
+|`Cluster Node`
+
+|`eap2.example.com`
+|`192.168.124.12`
+|`Cluster Node`
+|===
+
+* Install JBoss EAP 8.0 on both servers. We recommend using the zip file installation method and installing it in a separate directory to prevent overwriting the configuration of the instance that you have used in previous exercises. For all the VMs, create a user named `jboss` that will run the JBoss EAP instance.
+
+WARNING: This chapter and the following chapters involve a lot changes to the XML configuration files in JBoss EAP. We recommend you backup the configuration files after each exercise so that you have a record of your changes.
+
+=== Steps
+
+. You need to open a number of firewall ports on the `eap1` and `eap2` RHEL 9 VMs for clustering to work. Use the script below to configure the firewall. Execute the script/commands as the `root` user:
++
+[source,bash]
+----
+#!/bin/sh
+
+# UDP ports
+firewall-cmd --permanent --zone=public --add-port=23364/udp
+firewall-cmd --permanent --zone=public --add-port=45688/udp
+firewall-cmd --permanent --zone=public --add-port=45700/udp
+firewall-cmd --permanent --zone=public --add-port=55200/udp
+
+# TCP ports
+firewall-cmd --permanent --zone=public --add-port=7600/tcp
+firewall-cmd --permanent --zone=public --add-port=54200/tcp
+firewall-cmd --permanent --zone=public --add-port=57600/tcp
+firewall-cmd --permanent --zone=public --add-port=8080/tcp
+
+firewall-cmd --reload
+----
++
+You can verify that the ports are open using the command below:
++
+[source,bash]
+----
+[root@server]# firewall-cmd --list-all --zone=public
+public (active)
+  target: default
+  icmp-block-inversion: no
+  interfaces: enp1s0
+  sources: 
+  services: cockpit dhcpv6-client ssh
+  ports: 8080/tcp 8230/tcp 23364/udp 45688/udp 45700/udp 55200/udp 54200/tcp 7600/tcp 57600/tcp
+  protocols: 
+  forward: yes
+  masquerade: no
+  forward-ports: 
+  source-ports: 
+  icmp-blocks: 
+  rich rules:
+----
++
+IMPORTANT: Ensure you run these commands on *BOTH* `eap1` and `eap2` cluster nodes!
+
+. JBoss EAP conveniently provides a number of useful default configuration files for high availability setups. For the exercises in this chapter, we will use the `standalone-full-ha.xml` configuration file for clustering, high availability and load balancing. Inspect the `jgroups` subsystem in the `$JBOSS_HOME/standalone/configuration/standalone-full-ha.xml` file:
++
+[source,xml]
+----
+<subsystem xmlns="urn:jboss:domain:jgroups:9.0">
+  <channels default="ee">
+    <channel name="ee" stack="udp" cluster="ejb"/>
+  </channels>
+  <stacks>
+    <stack name="udp">
+      ...
+    </stack>
+    <stack name="tcp">
+      ...
+    </stack>
+    </stacks>
+</subsystem>
+----
++
+JBoss EAP uses the *jgroups* subsystem for forming clusters. The jgroups subsystem can work with different types of networks (UDP and TCP) to handle cluster communication. By default, *UDP* is used for cluster communication. This is for performance reasons and the fact that you do not need to explicitly configure the nodes in a cluster. EAP nodes can join or leave a cluster and the cluster auto-discovers the cluster members and re-configures itself automatically. 
++
+WARNING: Only use UDP multi-casting based clusters if you have full control of your network. In this setup, you can start any number of EAP nodes in the same subnet and they will all automatically discover each other and form a cluster!. Many corporate environments and the public clouds will _disable_ multicasting in their networks, and this UDP based set up will not work. In such cases, you need to configure jgroups to use the *TCP* stack. This is covered in the next section.
+
+. Inspect the `socket-binding-group` configuration in the `standalone-full-ha.xml` file:
++
+[source,xml]
+----
+<socket-binding-group name="standard-sockets" default-interface="public" port-offset="${jboss.socket.binding.port-offset:0}">
+  ...
+  <socket-binding name="jgroups-mping" interface="private" multicast-address="${jboss.default.multicast.address:230.0.0.4}" multicast-port="45700"/>
+  <socket-binding name="jgroups-tcp" interface="private" port="7600"/>
+  <socket-binding name="jgroups-tcp-fd" interface="private" port="57600"/>
+  <socket-binding name="jgroups-udp" interface="private" port="55200" multicast-address="${jboss.default.multicast.address:230.0.0.4}" multicast-port="45688"/>
+  <socket-binding name="jgroups-udp-fd" interface="private" port="54200"/>
+  ...
+</socket-binding-group>
+----
++
+Note how the `interface` used for cluster communication is `private`. Cluster communication between nodes happens on a separate network interface (usually bound to a separate private network), while the regular application traffic flows in to the cluster via its `public` interface. The ports used in this snippet correspond to the firewall ports you opened in the previous steps. The default multi-cast address is *230.0.0.4*.
+
+. Start the `eap1` node as the `jboss` user.
++
+```bash
+[jboss@eap1 bin] $ ./standalone.sh -c standalone-full-ha.xml \
+  -Djboss.bind.address=192.168.124.11 \
+  -Djboss.bind.address.private=192.168.124.11 \
+  -Djboss.node.name=eap1 \
+  -Djboss.messaging.cluster.password=redhat123
+```
++
+IMPORTANT: Each node of the cluster must have a unique name. Use the `-Djboss.node.name` flag in the command line to pass a unique name. 
++
+NOTE: Note that in our environment, we are binding both the `-Djboss.bind.address` and `-Djboss.bind.address.private` values to the same IP address (The IP address of the respective VMs). Ideally, you should use separate network interfaces with different IPs in separate isolated sub-networks.
+
+. Start the `eap2` node as the `jboss` user. Pass the IP address and unique node name of the cluster member as command line flags.
++
+```bash
+[jboss@eap1 bin] $ ./standalone.sh -c standalone-full-ha.xml\
+  -Djboss.bind.address=192.168.124.12 \
+  -Djboss.bind.address.private=192.168.124.12 \
+  -Djboss.node.name=eap2 \
+  -Djboss.messaging.cluster.password=redhat123
+```
+. Observe the terminal on the `eap1` node where you started the JBoss EAP instance. The cluster detects that a new node `eap2` has joined the cluster.
++
+```
+... ISPN100000: Node eap2 joined the cluster
+...
+... ISPN100002: Starting rebalance with members [eap1, eap2] ...
+... Finished rebalance with members [eap1, eap2], topology id 2
+...
+```
+
+. Download the sample application to test the cluster from https://github.com/RedHatQuickCourses/eap-qc-apps/releases/download/eap8-lp/cluster.war. Copy the WAR file to the `/tmp` folder on both `eap1` and `eap2`.
++
+```bash
+$ scp cluster.war jboss@eap1:/tmp/
+$ scp cluster.war jboss@eap2:/tmp/
+```
+
+. Launch the JBoss EAP CLI and deploy the WAR file on both `eap1` and `eap2` nodes.
++
+```bash
+[jboss@eap1 bin]$ ./jboss-cli.sh --connect
+[standalone@localhost:9990 /] deploy /tmp/cluster.war
+```
++
+Repeat the same commands to deploy the WAR file on `eap2`.
+
+. Verify that the WAR file has been deployed on both nodes by observing the logs in the terminal windows where you started the two nodes:
++
+```
+... WFLYDR0001: Content added at ...
+... WFLYSRV0027: Starting deployment of "cluster.war" (runtime-name: "cluster.war")
+...
+... WFLYCLINF0002: Started cluster.war cache from web container
+... WFLYUT0021: Registered web context: '/cluster' for server 'default-server'
+... WFLYSRV0010: Deployed "cluster.war" (runtime-name : "cluster.war")
+```
+
+. Access the test application on `eap1`. Using a web browser, navigate to the public IP of `eap1` (http://192.168.124.11:8080/cluster). You should see the home page of the application. It prints the session ID value along with a simple counter that increments on every page hit. It also shows which node servers the request (This will become relevant when you introduce a load balancer in the next section and split the traffic between the two nodes).
++
+image::cluster-app-browser.png[Cluster Test App in Browser]
+
+. The idea behind clustering is to replicate the HTTP session objects between the cluster nodes. Since there is no load balancer running with _session stickiness_ enabled, we need to test it manually from the command line using the `curl` command and passing the session value as HTTP header (as cookies) values. JBoss EAP creates a unique cookie for every user (called *JSESSIOND*), that it uses to track HTTP sessions. Open the browser's DevTools pane (Ctrl + Shift + C for Chrome, then go to `Application > Cookies > http://192.168.124.11:8080`) and find the *JSESSIONID* cookie value. Right click on the value, select `Edit Value`, and then copy this value to the clipboard. 
++
+image::jsession-id-value.png[Grab the JSESSIONID Cookie Value from DevTools]
++
+NOTE: You cannot use a browser to test this scenario because there is no way to enable or simulate session stickiness. The browser will create a unique session ID for each of the nodes and you will not be able to visualize the replication and failover.
+
+. Use the `curl` command to send requests to the application and increment the counter. Replace the `Cookie:` value with your own unique *JSESSIONID* value.
++
+```bash
+$ curl http://192.168.124.11:8080/cluster/cluster \
+  --header "Cookie: JSESSIONID=HxM_z7c2tbtHdpzo0JnYkV5jNZWEfHvxrP0-bja-.eap1"
+...
+<h1>Cluster Demo App</h1>
+<p>Session ID: ohWxpNiozUE7xG9q3cGIAmkthrsRdtf8EJrZwntg</p>
+<p>Visit Count: 2</p>
+<p>I am running on host eap1.example.com (192.168.124.11)</p>
+...
+```
++
+Run this `curl` command a few more times and observe the `Visit Count` value increasing by one for every request.
+
+. The session ID created on `eap1` should have been replicated to all members of the cluster. To verify this behavior, press `Ctrl + C` in the `eap1` terminal window to stop the `eap1` node and eject it from the cluster. Observe the logs in the terminal window on `eap2`. The cluster has noticed that `eap1` is no longer available and it rebalances.
++
+```
+...
+ISPN100001: Node eap1 left the cluster
+ISPN100007: After merge (or coordinator change), recovered members [eap2]...
+...
+```
+
+. Use the `curl` command to send requests to `eap2`. Replace the `Cookie:` value with the same *JSESSIONID* value that you used for sending requests to `eap1`.
++
+```bash
+$ curl http://192.168.124.12:8080/cluster/cluster \
+  --header "Cookie: JSESSIONID=HxM_z7c2tbtHdpzo0JnYkV5jNZWEfHvxrP0-bja-.eap1"
+<h1>Cluster Demo App</h1>
+<p>Session ID: ZFf88oPFpFjtMX12TEbVuPJCHDpPO4Dcrj9rm4_6</p>
+<p>Visit Count: 3</p>
+<p>I am running on host eap2.example.com (192.168.124.12)</p>
+```
+
+. Observe how the counter value is incremented, and not reset to zero. This is because the counter value (which has been stored in the HTTP session) has been replicated to `eap2`. Send a few more requests and notice the counter value is incremented by 1 for every request.
+
+. Optional: Test failback. First, restart `eap1` and let it join the cluster. Now, kill `eap2` and re-test the cluster application using curl, but this time send requests to `eap1`. Observe that the counter value is not reset, instead it is incremented by one as expected.
+
+=== Troubleshooting Tips
+
+* To troubleshoot if UDP multi-cast communication is happening correctly between your EAP nodes, use the `tcpdump` command on linux and snoop for traffic on port `45688`. You need to pass the correct network interface where traffic is to be monitored. In our case, RHEL 9 NIC called `enp1s0` which is used for both `public` and `private` IP address:
++
+```bash
+[root@eap1 ~]$ tcpdump -i enp1s0 \
+  udp port 45688 \
+  -vvv
+dropped privs to tcpdump
+tcpdump: listening on enp1s0, link-type EN10MB (Ethernet), snapshot length 262144 bytes
+10:36:03.614570 IP (tos 0x0, ttl 2, id 12241, offset 0, flags [DF], proto UDP (17), length 68)
+    eap2.example.com.55200 > 230.0.0.4.45688: [bad udp cksum 0x22fb -> 0x20b6!] UDP, length 40
+10:36:08.039372 IP (tos 0x0, ttl 2, id 45385, offset 0, flags [DF], proto UDP (17), length 104)
+    eap1.example.com.55200 > 230.0.0.4.45688: [bad udp cksum 0x231e -> 0xeb2a!] UDP, length 76
+10:36:09.216608 IP (tos 0x0, ttl 2, id 45629, offset 0, flags [DF], proto UDP (17), length 132)
+    eap1.example.com.55200 > 230.0.0.4.45688: [bad udp cksum 0x233a -> 0xf835!] UDP, length 104
+10:36:11.126320 IP (tos 0x0, ttl 2, id 46384, offset 0, flags [DF], proto UDP (17), length 132)
+    eap1.example.com.55200 > 230.0.0.4.45688: [bad udp cksum 0x233a -> 0xf835!] UDP, length 104
+10:36:11.616106 IP (tos 0x0, ttl 2, id 17726, offset 0, flags [DF], proto UDP (17), length 68)
+    eap2.example.com.55200 > 230.0.0.4.45688: [bad udp cksum 0x22fb -> 0x20b6!] UDP, length 40
+```
+
+* Ensure that the firewall ports required for clustering to work correctly are opened on ALL the nodes of the cluster. Use the `firewall-cmd` to verify and change the firewall configuration
+
+* JBoss EAP ships with a multi-cast testing tool that you can use to verify is UDP multi-cast communication happens correctly. Take any two nodes in your cluster and run the following commands for sending and receiving. First, start the receiver. Run the command from the `$JBOSS_HOME/bin` folder.
++
+```bash
+[jboss@eap1 bin]$ java -cp client/jboss-client.jar \
+  org.jgroups.tests.McastReceiverTest \
+  -mcast_addr 230.0.0.4 \
+  -port 45700 
+Socket=/0:0:0:0:0:0:0:0:45700, bind interface=name:enp1s0 (enp1s0)
+Socket=/0:0:0:0:0:0:0:0:45700, bind interface=name:lo (lo)
+Socket=/0:0:0:0:0:0:0:0:45700, bind interface=name:lo (lo)
+```
++
+Similarly, start the sender on another node. The program will wait for input. Type some text and hit enter. If UDP multi-casting is working correctly, the text you typed should be echoed on the receiver node.
++
+```bash
+[jboss@eap1 bin]$ java -cp client/jboss-client.jar \
+  org.jgroups.tests.McastSenderTest \
+  -mcast_addr 230.0.0.4 \
+  -port 45700 
+Socket #1=/0:0:0:0:0:0:0:0:45700, ttl=32, bind interface=name:enp1s0 (enp1s0)
+Socket #2=/0:0:0:0:0:0:0:0:45700, ttl=32, bind interface=name:lo (lo)
+Socket #3=/0:0:0:0:0:0:0:0:45700, ttl=32, bind interface=name:lo (lo)
+> hello
+> world
+```
