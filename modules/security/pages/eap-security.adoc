@@ -1,3 +1,49 @@
-= EAP Security
+= Enabling or Disabling the EAP Management (Web) Console
 
-This is _Section 1_ of _Chapter 3_ in the *hello* quick course....
+== References
+
+* https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/getting_started_with_management_console/index#enable-or-disable-the-management-console_default[Enable or Disable EAP Management Console^]
+
+== Exercise: Enabling or Disabling the Web Console
+
+. Start JBoss EAP as the `jboss` user
+
+. Connect to the JBoss EAP CLI:
++
+```bash
+[jboss@eap1 bin]$ ./jboss-cli.sh --connect
+[standalone@localhost:9990 /]
+```
+
+. Execute the following EAP CLI command to disable the EAP web console:
++
+```bash
+[standalone@localhost:9990 /] /core-service=management/management-interface=http-interface:write-attribute(name=console-enabled,value=false)
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+```
+
+. Reload the EAP server for the configuration to take effect:
++
+```bash
+[standalone@localhost:9990 /] :reload
+{
+    "outcome" => "success",
+}
+```
+
+. Navigate to URL of the EAP web console. In my case, http://eap1:9990. You will be shown a message saying that the web console is not enabled.
+
+. To re-enable the EAP web console, run the following commands:
++
+```bash
+[standalone@localhost:9990 /] /core-service=management/management-interface=http-interface:write-attribute(name=console-enabled,value=true)
+[standalone@localhost:9990 /] :reload
+```
++
+To verify that the EAP web console is available, navigate to http://eap1:9990 and log in using a management user.
