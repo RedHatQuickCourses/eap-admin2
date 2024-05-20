@@ -131,22 +131,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../openshift/index.html">EAP on OpenShift</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../openshift/eap-container.html">EAP Container</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../openshift/deploy-openshift.html">Deploy EAP Applications on OpenShift</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -219,7 +203,7 @@
 <p>You need a MySQL database to test the secure database access credentials. The easiest way to test this is to run a MySQL database as a container using <code>podman</code> or <code>docker</code>.</p>
 </li>
 <li>
-<p>To run the MySQL DB container. Replace the <code>podman</code> command with <code>docker</code> if your operating system cannot run <code>podman</code>:</p>
+<p>Run the MySQL DB container. Replace the <code>podman</code> command with <code>docker</code> if your operating system cannot run <code>podman</code>:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 ~]$ podman run -d \
@@ -246,7 +230,7 @@ CONTAINER ID  IMAGE                      COMMAND     CREATED        STATUS      
 <p>If the DB container fails to start, run the <code>podman logs mysql-eap-test</code> command to inspect the start up logs and fix any issues.</p>
 </li>
 <li>
-<p>To restart failed start ups and other issues, run <code>podman stop mysql-eap-test</code> followed by <code>podman rm mysql-eap-test</code>, and then run the start up command again.</p>
+<p>To restart after failed start ups and other issues, run <code>podman stop mysql-eap-test</code> followed by <code>podman rm mysql-eap-test</code>, and then run the start up command again.</p>
 </li>
 </ul>
 </div>

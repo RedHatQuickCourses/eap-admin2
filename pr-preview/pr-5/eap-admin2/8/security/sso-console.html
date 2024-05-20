@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>EAP Web Console Single Sign-On using OIDC :: Red Hat JBoss EAP Administration II</title>
     <link rel="prev" href="vault.html">
-    <link rel="next" href="../openshift/index.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -131,22 +130,6 @@
   </li>
 </ul>
   </li>
-  <li class="nav-item" data-depth="0">
-<ul class="nav-list">
-  <li class="nav-item" data-depth="1">
-    <button class="nav-item-toggle"></button>
-    <a class="nav-link" href="../openshift/index.html">EAP on OpenShift</a>
-<ul class="nav-list">
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../openshift/eap-container.html">EAP Container</a>
-  </li>
-  <li class="nav-item" data-depth="2">
-    <a class="nav-link" href="../openshift/deploy-openshift.html">Deploy EAP Applications on OpenShift</a>
-  </li>
-</ul>
-  </li>
-</ul>
-  </li>
 </ul>
   </nav>
 </div>
@@ -187,12 +170,265 @@
 </aside>
 <article class="doc">
 <h1 class="page">EAP Web Console Single Sign-On using OIDC</h1>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/using_single_sign-on_with_jboss_eap/index#securing-the-jboss-eap-management-console-with-an-openid-provider_default" target="_blank" rel="noopener">Securing the JBoss EAP management console with an OpenID provider</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_securing_the_jboss_eap_management_console_using_keycloak"><a class="anchor" href="#_exercise_securing_the_jboss_eap_management_console_using_keycloak"></a>Exercise: Securing the JBoss EAP Management Console using Keycloak</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>You need a Keycloak v24.0 Single Sign-On server as the OIDC provider that manages credentials. The easiest way to run this is as a container using <code>podman</code> or <code>docker</code> CLI.</p>
+</li>
+<li>
+<p>Download the keycloak realm file from <a href="https://github.com/RedHatQuickCourses/eap-qc-apps/blob/main/admin2/realm.json" class="bare">https://github.com/RedHatQuickCourses/eap-qc-apps/blob/main/admin2/realm.json</a>, and copy it to a new folder in your home directory (Create a new folder in your home directory, for example <code>kc-realms</code>).</p>
+</li>
+<li>
+<p>Run the Keycloak v24.0 container. Replace the <code>podman</code> command with <code>docker</code> if your operating system cannot run <code>podman</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 ~]$ podman run -d \
+  --name keycloak -p 8180:8180 \
+  -e  KEYCLOAK_ADMIN=admin \
+  -e KEYCLOAK_ADMIN_PASSWORD=admin \
+  -v /Users/rsriniva/kc-realms:/opt/keycloak/data/import \
+  quay.io/keycloak/keycloak:24.0 start-dev \
+  --http-port=8180 --import-realm</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>--import-realm</code> command imports a Keycloak realm into the current running Keycloak instance. This is to prevent the long and tedious process of creating a new realm from scratch. Consult the Keycloak and EAP product documentation in case you need to create a realm from scratch.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>To verify that the Keycloak DB container started successfully:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 ~]$ podman ps
+CONTAINER ID  IMAGE                           COMMAND               CREATED      STATUS          PORTS                   NAMES
+46d7fc6981e3  quay.io/keycloak/keycloak:24.0  start-dev --http-...  13 days ago  Up 10 seconds   0.0.0.0:8180-&gt;8180/tcp  keycloak</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If the Keycloak container fails to start, run the <code>podman logs keycloak</code> command to inspect the start up logs and fix any issues.</p>
+</li>
+<li>
+<p>To restart after failures and other issues, run <code>podman stop keycloak</code> followed by <code>podman rm keycloak</code>, and then run the start up command again.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_steps"><a class="anchor" href="#_steps"></a>Steps</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start JBoss EAP in standalone mode as the <code>jboss</code> user and connect to the JBoss EAP CLI locally.</p>
+</li>
+<li>
+<p>Add a new keycloak OIDC provider to the <code>elytron-oidc-client</code> subsystem. The realm file you imported has created a new realm called <code>eap-web-console</code>. Provide the details of the realm to the <code>provider-url</code> property.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /subsystem=elytron-oidc-client/provider=keycloak:add(provider-url=http://localhost:8180/realms/eap-web-console)
+{"outcome" =&gt; "success"}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>EAP has native support for OIDC. It needs two components to function, a <code>secure deployment</code> and a <code>secure server</code>. The realm already has two clients that were pre-created during start up (<code>eap-management</code> and <code>eap-console</code>). We create a new secure deployment for the <code>eap-management</code> client ID and pass it some attributes:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /subsystem=elytron-oidc-client/secure-deployment=eap-management:add(provider=keycloak,client-id=eap-management,principal-attribute=preferred_username,bearer-only=true,ssl-required=EXTERNAL)
+{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>We want to map the identity stored in Keycloak to roles needed for EAP management console access. Enable role based access control (RBAC) on EAP for this mapping to work correctly:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /core-service=management/access=authorization:write-attribute(name=provider,value=rbac)
+{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}
+
+[standalone@localhost:9993 /] /core-service=management/access=authorization:write-attribute(name=use-identity-roles,value=true)
+{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Finally, add a <code>secure-server</code> resource and reference the provider and client ID:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /subsystem=elytron-oidc-client/secure-server=wildfly-console:add(provider=keycloak,client-id=eap-console,public-client=true)
+{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}
+
+[standalone@localhost:9993 /] :reload</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The JBoss EAP management console requires that the <code>secure-server</code> resource be specifically named <code>wildfly-console</code>.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Inspect the XML changes made to the <code>elytron-oidc-client</code> in the <code>standalone.xml</code> file.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;subsystem xmlns="urn:wildfly:elytron-oidc-client:2.0"&gt;
+    &lt;provider name="keycloak"&gt;
+      &lt;provider-url&gt;http://localhost:8180/realms/eap-web-console&lt;/provider-url&gt;
+    &lt;/provider&gt;
+    &lt;secure-deployment name="eap-management"&gt;
+        &lt;ssl-required&gt;EXTERNAL&lt;/ssl-required&gt;
+        &lt;principal-attribute&gt;preferred_username&lt;/principal-attribute&gt;
+        &lt;provider&gt;keycloak&lt;/provider&gt;
+        &lt;client-id&gt;eap-management&lt;/client-id&gt;
+        &lt;bearer-only&gt;true&lt;/bearer-only&gt;
+    &lt;/secure-deployment&gt;
+    &lt;secure-server name="wildfly-console"&gt;
+        &lt;provider&gt;keycloak&lt;/provider&gt;
+        &lt;client-id&gt;eap-console&lt;/client-id&gt;
+        &lt;public-client&gt;true&lt;/public-client&gt;
+    &lt;/secure-server&gt;
+&lt;/subsystem&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>You need to create a new realm role called "Administrator" and enable this role for the users you create in KC. Navigate to <a href="http://localhost:8180" class="bare">http://localhost:8180</a> and log in as <code>admin</code> with a password of <code>admin</code>.</p>
+</li>
+<li>
+<p>Select the <code>eap-web-console</code> realm in the top left sidebar manu.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/select-eap-realm.png" alt="Select eap-web-console realm">
+</div>
+</div>
+</li>
+<li>
+<p>Click on <code>Clients</code> and verify that two clients exist - <code>eap-console</code> and <code>eap-management</code>.</p>
 <div class="paragraph">
-<p>This is <em>Section 2</em> of <em>Chapter 3</em> in the <strong>hello</strong> quick course&#8230;&#8203;.</p>
+<p><span class="image"><img src="_images/clients.png" alt="OIDC clients"></span></p>
+</div>
+</li>
+<li>
+<p>Click on <code>eap-console</code> and inspect the settings. Note that post authentication re-direct URL is set to the JBoss EAP management console URL (<code><a href="http://localhost:9990/console/*" class="bare">http://localhost:9990/console/*</a></code>). The <code>Web origins</code> is also set to the URL of the EAP web console.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/client-settings.png" alt="Client settings">
+</div>
+</div>
+</li>
+<li>
+<p>Click on <code>Realm roles</code> and verify that an <code>Administrator</code> role exists. You will assign this role to users who should have access to the EAP web console.</p>
+</li>
+<li>
+<p>Click on <code>Users</code>. During import, users cannot be imported due to security policies. Click <code>Create new user</code> to create a new user.</p>
+</li>
+<li>
+<p>Enter the following details in the <code>Create user</code> page and click <code>Create</code>.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Email verified: <strong>Yes</strong></p>
+</li>
+<li>
+<p>Username: <strong>eap-admin-kc</strong></p>
+</li>
+<li>
+<p>Email: <strong>eap-admin-kc@example.com</strong></p>
+</li>
+<li>
+<p>First name: <strong>EAP</strong></p>
+</li>
+<li>
+<p>Last name: <strong>Admin</strong></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>In the <code>User details</code> page, click the <code>Credentials</code> tab, and then click <code>Set password</code>. Enter <code>redhat123</code> as the password and set <code>Temporary</code> to <strong>OFF</strong>. Finally, click <code>Save</code>.</p>
+</li>
+<li>
+<p>Back in the <code>User details</code> page, click <code>Role mapping</code> tab, and then click <code>Assign role</code> and assign the <code>Administrator</code> realm role to the <code>eap-admin-kc</code> user.</p>
+<div class="paragraph">
+<p><span class="image"><img src="_images/assign-realm-role.png" alt="Assign Realm Roles"></span></p>
+</div>
+<div class="paragraph">
+<p>Click on <code>Realm roles &gt; Users in role</code> and verify that <code>eap-admin-kc</code> is listed.</p>
+</div>
+<div class="paragraph">
+<p><span class="image"><img src="_images/users-in-role.png" alt="Users in Realm Role"></span></p>
+</div>
+</li>
+<li>
+<p>Navigate to <a href="http://localhost:9990" class="bare">http://localhost:9990</a> and verify that you can log in as user <code>eap-admin-kc</code> with <code>redhat123</code> as password.</p>
+<div class="paragraph">
+<p><span class="image"><img src="_images/login-success.png" alt="Log in using OIDC"></span></p>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="vault.html">Secure Credential Storage Using Elytron Credential Store</a></span>
-  <span class="next"><a href="../openshift/index.html">EAP on OpenShift</a></span>
 </nav>
 </article>
   </div>
