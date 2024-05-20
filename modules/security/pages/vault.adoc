@@ -1,0 +1,292 @@
+= Secure Credential Storage Using Elytron Credential Store
+
+== References
+
+* https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/secure_storage_of_credentials_in_jboss_eap/index#credentials_and_credential_stores_in_elytron[Credentials and credential stores in Elytron^]
+
+* https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/secure_storage_of_credentials_in_jboss_eap/index#proc_creating-a-credential-store-for-a-standalone-server_default[Creating a credential-store for a standalone server^]
+
+* https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/secure_storage_of_credentials_in_jboss_eap/index#assembly_credential-store-operations-using-the-wildfly-elytron-tool_default[Credential store operations using the WildFly Elytron tool^]
+
+* https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/secure_storage_of_credentials_in_jboss_eap/index#con_enrypted-expressions-in-elytron_default[Encrypted expressions in Elytron^]
+
+== Exercise 1: Storing Database Passwords Securely in JBoss EAP Configuration Files
+
+=== Pre-requisites
+
+* You need a MySQL database to test the secure database access credentials. The easiest way to test this is to run a MySQL database as a container using `podman` or `docker`.
+
+* To run the MySQL DB container. Replace the `podman` command with `docker` if your operating system cannot run `podman`:
++
+```bash
+[jboss@eap1 ~]$ podman run -d \
+  --name mysql-eap-test \
+  -e MYSQL_USER=eap \
+  -e MYSQL_PASSWORD=mysql123 \
+  -e MYSQL_DATABASE=testdb \
+  -e MYSQL_ROOT_PASSWORD=rootmysql123 \
+  mysql:8.0
+```
+
+* To verify that the MySQL DB container started successfully:
++
+```bash
+[jboss@eap1 ~]$ podman ps
+CONTAINER ID  IMAGE                      COMMAND     CREATED        STATUS        PORTS       NAMES
+5970ecedf3e3  docker.io/library/mysql:8  mysqld      4 seconds ago  Up 4 seconds              mysql-eap-test
+```
+
+* If the DB container fails to start, run the `podman logs mysql-eap-test` command to inspect the start up logs and fix any issues.
+
+* To restart failed start ups and other issues, run `podman stop mysql-eap-test` followed by `podman rm mysql-eap-test`, and then run the start up command again.
+
+=== Steps
+
+. You can run this exercise either on `eap1` or `eap2`. We will use a single EAP instance to test. In my case, I am using the `eap1` VM to run these commands.
+
+. Start a standalone instance of JBoss EAP 8 on `eap1` as the `jboss` user.
+
+. JBoss EAP provides a file named `elytron-tool.sh` in the `$JBOSS_HOME/bin` folder. This command is used to create a credential store to store sensitive information for your applications, for example, database connection information.
+
+. Create a new credential store using the `elytron-tool.sh` CLI. You will be prompted twice to enter a password for the store:
++
+```bash
+[jboss@eap1 bin]$ ./elytron-tool.sh credential-store \
+  --create \
+  --location "../standalone/configuration/credentials.store"
+Credential store password: *********
+Confirm credential store password: *********
+Credential Store has been successfully created
+```
++
+NOTE: The `--location` argument is a file path relative to the `$JBOSS_HOME/bin` folder.
+
+. Now, you can create an `alias` for the MySQL database password. You will be prompted for the credential store password:
++
+```bash
+[jboss@eap1 bin]$ ./elytron-tool.sh credential-store \
+  --location "../standalone/configuration/credentials.store" \
+  --add mysql-db-pass \
+  --secret mysql123
+Credential store password: 
+Alias "mysql-db-pass" has been successfully stored 
+```
++
+IMPORTANT: Do NOT get confused between the credential store password and the database password (The value of the `--secret` argument. `mysql-db-pass` is the alias name). The value of the `--secret` argument must match the MySQL database password you used earlier in the `podman run` command (`-e MYSQL_PASSWORD` flag).
+
+. Connect to the JBoss EAP CLI and run the following commands. Add the newly created keystore to JBoss EAP:
++
+```bash
+[jboss@eap1 bin]$ ./jboss-cli.sh --connect
+[standalone@localhost:9993 /] /subsystem=elytron/credential-store=my-cred-store:add(location="../standalone/configuration/credentials.store",credential-reference={clear-text=redhat123})
+{"outcome" => "success"}
+```
++
+NOTE: The keystore is now referred to by it's alias (logical) name `my-cred-store`. The `credential-reference` value is the keystore password.
+
+. Download the MySQL JDBC driver file and copy it to the `$JBOSS_HOME/bin` folder:
++
+```bash
+[jboss@eap1 ]$ wget https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar
+[jboss@eap1 ]$ cp mysql-connector-j-8.4.0.jar $JBOSS_HOME/bin/
+```
+
+. Add a new module for the MySQL database driver, and then add the driver to the EAP configuration (to the `datasources` subsystem):
++
+```bash
+[standalone@localhost:9993 /] module add \
+  --name=com.mysql \
+  --resources=mysql-connector-j-8.4.0.jar \
+  --dependencies=javax.api,javax.transaction.api
+
+[standalone@localhost:9993 /] /subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql)
+{"outcome" => "success"}
+```
+
+. Add a new MySQL data source using the added driver and module:
++
+```bash
+[standalone@localhost:9993 /] data-source add \
+  --jndi-name=java:/test-mysql-ds \
+  --name=test-mysql-ds \
+  --connection-url=jdbc:mysql://localhost:3306/testdb \
+  --driver-name=mysql \
+  --user-name=eap \
+  --credential-reference={store=my-cred-store, alias=mysql-db-pass}
+```
++
+NOTE: Review the `--connection-url` argument carefully. The name of the database (`testdb`) must match the `-e MYSQL_DATABASE=testdb` argument you passed to `podman run`. Note how, instead of password in plain-text, you pass a `--credential-reference` with the alias/logical name of the credential store and the alias name (`mysql-db-pass`), which contains the database password. Imagine the store as a database with key-value pairs. The key name is the alias, and the value is the confidential information you want to store. You can add any number of such key-value pairs in the key store.
+
+. Test the database connection:
++
+```bash
+[standalone@localhost:9993 /] /subsystem=datasources/data-source=test-mysql-ds:test-connection-in-pool()
+{
+    "outcome" => "success",
+    "result" => [true]
+}
+```
+
+. Inspect the XML content in the `datasources` subsystem that was added by the commands you ran in this exercise:
++
+```xml
+<subsystem xmlns="urn:jboss:domain:datasources:7.0">
+  <datasources>
+...
+    <datasource jndi-name="java:/test-mysql-ds" pool-name="test-mysql-ds">
+      <connection-url>jdbc:mysql://localhost:3306/testdb</connection-url>
+      <driver>mysql</driver>
+      <security>
+        <user-name>eap</user-name>
+        <credential-reference store="my-cred-store" alias="mysql-db-pass"/>
+      </security>
+    </datasource>
+    <drivers>
+...
+      <driver name="mysql" module="com.mysql"/>
+    </drivers>
+  </datasources>
+</subsystem>
+```
+
+== Exercise 2: Storing Encrypted Expressions in JBoss EAP Configuration Files
+
+You avoided writing the database password in plain-text in the EAP configuration file in the previous exercise. However, this is still not optimal because the DB host name, port, database name and user name are still in plain text. Although you can create aliases for these too, a better approach is to encrypt sensitive information using Elytron's secret key credential store.
+
+=== Pre-requisites
+
+* Same as the previous exercise in this section. You need a MySQL database. Run the database as a container as outlined previously.
+
+* Add a new module for the MySQL JDBC driver, and add the driver for MySQL to the EAP configuration file as outlined in the previous exercise.
+
+=== Steps
+
+. Start JBoss EAP 8.0 as the `jboss` on `eap1`.
+
+. Connect to the EAP CLI for this instance
+
+. Create a new secret key credential store:
++
+```bash
+[standalone@localhost:9993 /] /subsystem=elytron/secret-key-credential-store=my-secret-store:add(relative-to=jboss.server.config.dir, path=my-secret-store.store)
+{"outcome" => "success"}
+```
+
+. Generate a random key for this store:
++
+```bash
+[standalone@localhost:9993 /] /subsystem=elytron/secret-key-credential-store=my-secret-store:export-secret-key(alias=key)
+{
+    "outcome" => "success",
+    "result" => {"key" => "RUxZAUtlihLWFAyiQkMU/lyz3kS0FlUcmAbJFapw5QdDUfFmHA=="}
+}
+```
+
+. Add a resolver that points to the new key:
++
+```bash
+[standalone@localhost:9993 /] /subsystem=elytron/expression=encryption:add(resolvers=[{name=my-resolver, credential-store=my-secret-store, secret-key=key}])
+{"outcome" => "success"}
+```
+
+. Now, encrypt the DB password using the resolver:
++
+```bash
+[standalone@localhost:9993 /] /subsystem=elytron/expression=encryption:create-expression(resolver=my-resolver, clear-text=mysql123)
+{
+    "outcome" => "success",
+    "result" => {"expression" => "${ENC::my-resolver:RUxZAUMQu9qsmM618jE0WNO1303Jbyi/6OP2l3uhXzg1zXgJZJg=}"}
+}
+```
+
+. You can also use the `elytron-tool.sh `CLI to generate the encrypted password:
++
+```bash
+[jboss@eap1 bin]$ ./elytron-tool.sh credential-store \
+  --location ../standalone/configuration/my-secret-store.store \
+  --type PropertiesCredentialStore \
+  --encrypt key
+Clear text value:
+Confirm clear text value:
+Clear text encrypted to token 'RUxZAUMQ9t/NLolXu0fiaG6GjmecRNPrmhAuYhcFJxRfmhIvjR4=' using alias 'key'.
+```
++
+WARNING: Run `elyton-tool.sh` from the OS command line and not from the EAP CLI!
+
+. Now, create a new data source connection using the encrypted string instead of raw text password:
++
+```bash
+[standalone@localhost:9993 /] data-source add \
+  --jndi-name=java:/test-mysql-ds-enc \
+  --name=test-mysql-ds-enc \
+  --connection-url=jdbc:mysql://localhost:3306/testdb \
+  --driver-name=mysql \
+  --user-name=eap \
+  --password=${ENC::my-resolver:RUxZAUMQu9qsmM618jE0WNO1303Jbyi/6OP2l3uhXzg1zXgJZJg=}
+```
+
+. Test the connection:
++
+```bash
+[standalone@localhost:9993 /] /subsystem=datasources/data-source=test-mysql-ds-enc:test-connection-in-pool()
+{
+    "outcome" => "success",
+    "result" => [true]
+}
+```
+
+. Inspect the XML generated by the commands:
++
+```xml
+...
+<datasource jndi-name="java:/test-mysql-ds" pool-name="test-mysql-ds">
+  <connection-url>jdbc:mysql://localhost:3306/testdb</connection-url>
+  <driver>mysql</driver>
+  <security>
+    <user-name>eap</user-name>
+    <credential-reference store="my-cred-store" alias="mysql-db-pass"/>
+  </security>
+</datasource>
+<datasource jndi-name="java:/test-mysql-ds-enc" pool-name="test-mysql-ds-enc">
+  <connection-url>jdbc:mysql://localhost:3306/testdb</connection-url>
+  <driver>mysql</driver>
+  <security>
+    <user-name>eap</user-name>
+    <password>${ENC::my-resolver:RUxZAUMQu9qsmM618jE0WNO1303Jbyi/6OP2l3uhXzg1zXgJZJg=}</password>
+  </security>
+</datasource>
+...
+```
+
+. *Optional Challenge:* Can you encrypt the `user-name` and the `connection-url` using resolvers?
+
+. Clean up. Remove the two data sources:
++
+```bash
+[standalone@localhost:9993 /] /subsystem=datasources/data-source=test-mysql-ds-enc:remove()
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+
+[standalone@localhost:9993 /] /subsystem=datasources/data-source=test-mysql-ds:remove()
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+
+[standalone@localhost:9993 /] :reload
+```
+
+. Stop and remove the MySQL DB container:
++
+```bash
+[jboss@eap1 ~]$ podman stop mysql-eap-test
+[jboss@eap1 ~]$ podman rm mysql-eap-test
+```

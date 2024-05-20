@@ -71,7 +71,7 @@ key-store   is key-store-ffd473f8-e220-4d46-9d41-549dc4085427
 
 . Make note of the long UUID value for the `key-store`. You can reference this unique ID for CLI operations on the keystore. Navigate to https://eap1:9993 to access the web console using TLS.
 
-. The EAP CLI also offers a convienient interactive tool to generate production quality TLS certificates for *Let's Encrypt*. See https://wildfly-security.github.io/wildfly-elytron/blog/obtaining-certificates-from-lets-encrypt-using-the-wildfly-cli/ for more details.
+. The EAP CLI also offers a convenient interactive tool to generate production quality TLS certificates for *Let's Encrypt*. See https://wildfly-security.github.io/wildfly-elytron/blog/obtaining-certificates-from-lets-encrypt-using-the-wildfly-cli/ for more details.
 
 . To disable TLS for the web console, run the following command:
 +

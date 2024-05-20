@@ -1,4 +1,5 @@
 * xref:index.adoc[]
 ** xref:eap-security.adoc[]
 ** xref:tls-console.adoc[]
+** xref:vault.adoc[]
 ** xref:sso-console.adoc[]
