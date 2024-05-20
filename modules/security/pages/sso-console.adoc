@@ -1,3 +1,164 @@
 = EAP Web Console Single Sign-On using OIDC
 
-This is _Section 2_ of _Chapter 3_ in the *hello* quick course....
+== References
+
+* https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/using_single_sign-on_with_jboss_eap/index#securing-the-jboss-eap-management-console-with-an-openid-provider_default[Securing the JBoss EAP management console with an OpenID provider^]
+
+== Exercise: Securing the JBoss EAP Management Console using Keycloak
+
+=== Pre-requisites
+
+* You need a Keycloak v24.0 Single Sign-On server as the OIDC provider that manages credentials. The easiest way to run this is as a container using `podman` or `docker` CLI.
+
+* Download the keycloak realm file from https://github.com/RedHatQuickCourses/eap-qc-apps/blob/main/admin2/realm.json, and copy it to a new folder in your home directory (Create a new folder in your home directory, for example `kc-realms`).
+
+* Run the Keycloak v24.0 container. Replace the `podman` command with `docker` if your operating system cannot run `podman`:
++
+```bash
+[jboss@eap1 ~]$ podman run -d \
+  --name keycloak -p 8180:8180 \
+  -e  KEYCLOAK_ADMIN=admin \
+  -e KEYCLOAK_ADMIN_PASSWORD=admin \
+  -v /Users/rsriniva/kc-realms:/opt/keycloak/data/import \
+  quay.io/keycloak/keycloak:24.0 start-dev \
+  --http-port=8180 --import-realm
+```
++
+NOTE: The `--import-realm` command imports a Keycloak realm into the current running Keycloak instance. This is to prevent the long and tedious process of creating a new realm from scratch. Consult the Keycloak and EAP product documentation in case you need to create a realm from scratch.
+
+* To verify that the Keycloak DB container started successfully:
++
+```bash
+[jboss@eap1 ~]$ podman ps
+CONTAINER ID  IMAGE                           COMMAND               CREATED      STATUS          PORTS                   NAMES
+46d7fc6981e3  quay.io/keycloak/keycloak:24.0  start-dev --http-...  13 days ago  Up 10 seconds   0.0.0.0:8180->8180/tcp  keycloak
+```
+
+* If the Keycloak container fails to start, run the `podman logs keycloak` command to inspect the start up logs and fix any issues.
+
+* To restart after failures and other issues, run `podman stop keycloak` followed by `podman rm keycloak`, and then run the start up command again.
+
+=== Steps
+
+. Start JBoss EAP in standalone mode as the `jboss` user and connect to the JBoss EAP CLI locally.
+
+. Add a new keycloak OIDC provider to the `elytron-oidc-client` subsystem. The realm file you imported has created a new realm called `eap-web-console`. Provide the details of the realm to the `provider-url` property.
++
+```bash
+[standalone@localhost:9993 /] /subsystem=elytron-oidc-client/provider=keycloak:add(provider-url=http://localhost:8180/realms/eap-web-console)
+{"outcome" => "success"}
+```
+
+. EAP has native support for OIDC. It needs two components to function, a `secure deployment` and a `secure server`. The realm already has two clients that were pre-created during start up (`eap-management` and `eap-console`). We create a new secure deployment for the `eap-management` client ID and pass it some attributes:
++
+```bash
+[standalone@localhost:9993 /] /subsystem=elytron-oidc-client/secure-deployment=eap-management:add(provider=keycloak,client-id=eap-management,principal-attribute=preferred_username,bearer-only=true,ssl-required=EXTERNAL)
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+```
+
+. We want to map the identity stored in Keycloak to roles needed for EAP management console access. Enable role based access control (RBAC) on EAP for this mapping to work correctly:
++
+```bash
+[standalone@localhost:9993 /] /core-service=management/access=authorization:write-attribute(name=provider,value=rbac)
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+
+[standalone@localhost:9993 /] /core-service=management/access=authorization:write-attribute(name=use-identity-roles,value=true)
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+```
+
+. Finally, add a `secure-server` resource and reference the provider and client ID:
++
+```bash
+[standalone@localhost:9993 /] /subsystem=elytron-oidc-client/secure-server=wildfly-console:add(provider=keycloak,client-id=eap-console,public-client=true)
+{
+    "outcome" => "success",
+    "response-headers" => {
+        "operation-requires-reload" => true,
+        "process-state" => "reload-required"
+    }
+}
+
+[standalone@localhost:9993 /] :reload
+```
++
+IMPORTANT: The JBoss EAP management console requires that the `secure-server` resource be specifically named `wildfly-console`.
+
+. Inspect the XML changes made to the `elytron-oidc-client` in the `standalone.xml` file.
++
+```xml
+<subsystem xmlns="urn:wildfly:elytron-oidc-client:2.0">
+    <provider name="keycloak">
+      <provider-url>http://localhost:8180/realms/eap-web-console</provider-url>
+    </provider>        
+    <secure-deployment name="eap-management">
+        <ssl-required>EXTERNAL</ssl-required>
+        <principal-attribute>preferred_username</principal-attribute>
+        <provider>keycloak</provider>
+        <client-id>eap-management</client-id>
+        <bearer-only>true</bearer-only>
+    </secure-deployment>
+    <secure-server name="wildfly-console">
+        <provider>keycloak</provider>
+        <client-id>eap-console</client-id>
+        <public-client>true</public-client>
+    </secure-server>
+</subsystem>
+```
+
+. You need to create a new realm role called "Administrator" and enable this role for the users you create in KC. Navigate to http://localhost:8180 and log in as `admin` with a password of `admin`.
+
+. Select the `eap-web-console` realm in the top left sidebar manu.
++
+image::select-eap-realm.png[Select eap-web-console realm]
+
+. Click on `Clients` and verify that two clients exist - `eap-console` and `eap-management`.
++
+image:clients.png[OIDC clients]
+
+. Click on `eap-console` and inspect the settings. Note that post authentication re-direct URL is set to the JBoss EAP management console URL (`http://localhost:9990/console/*`). The `Web origins` is also set to the URL of the EAP web console.
++
+image::client-settings.png[Client settings]
+
+. Click on `Realm roles` and verify that an `Administrator` role exists. You will assign this role to users who should have access to the EAP web console.
+
+. Click on `Users`. During import, users cannot be imported due to security policies. Click `Create new user` to create a new user.
+
+. Enter the following details in the `Create user` page and click `Create`.
++
+* Email verified: *Yes*
+* Username: *eap-admin-kc*
+* Email: *eap-admin-kc@example.com*
+* First name: *EAP*
+* Last name: *Admin*
+
+. In the `User details` page, click the `Credentials` tab, and then click `Set password`. Enter `redhat123` as the password and set `Temporary` to *OFF*. Finally, click `Save`.
+
+. Back in the `User details` page, click `Role mapping` tab, and then click `Assign role` and assign the `Administrator` realm role to the `eap-admin-kc` user.
++
+image:assign-realm-role.png[Assign Realm Roles]
++ 
+Click on `Realm roles > Users in role` and verify that `eap-admin-kc` is listed.
++
+image:users-in-role.png[Users in Realm Role]
+
+. Navigate to http://localhost:9990 and verify that you can log in as user `eap-admin-kc` with `redhat123` as password.
++
+image:login-success.png[Log in using OIDC]

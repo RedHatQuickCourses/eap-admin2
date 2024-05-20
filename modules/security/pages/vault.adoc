@@ -16,7 +16,7 @@
 
 * You need a MySQL database to test the secure database access credentials. The easiest way to test this is to run a MySQL database as a container using `podman` or `docker`.
 
-* To run the MySQL DB container. Replace the `podman` command with `docker` if your operating system cannot run `podman`:
+* Run the MySQL DB container. Replace the `podman` command with `docker` if your operating system cannot run `podman`:
 +
 ```bash
 [jboss@eap1 ~]$ podman run -d \
@@ -38,7 +38,7 @@ CONTAINER ID  IMAGE                      COMMAND     CREATED        STATUS      
 
 * If the DB container fails to start, run the `podman logs mysql-eap-test` command to inspect the start up logs and fix any issues.
 
-* To restart failed start ups and other issues, run `podman stop mysql-eap-test` followed by `podman rm mysql-eap-test`, and then run the start up command again.
+* To restart after failed start ups and other issues, run `podman stop mysql-eap-test` followed by `podman rm mysql-eap-test`, and then run the start up command again.
 
 === Steps
 

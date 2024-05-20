@@ -1,3 +1,0 @@
-* xref:index.adoc[]
-** xref:eap-container.adoc[]
-** xref:deploy-openshift.adoc[]
