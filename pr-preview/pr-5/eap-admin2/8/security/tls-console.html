@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Enabling TLS/SSL in the EAP Web Console :: Red Hat JBoss EAP Administration II</title>
     <link rel="prev" href="eap-security.html">
-    <link rel="next" href="sso-console.html">
+    <link rel="next" href="vault.html">
     <meta name="generator" content="Antora 3.1.3">
     <link rel="stylesheet" href="../../../_/css/site.css">
     <script>var uiRootPath = '../../../_'</script>
@@ -120,6 +120,9 @@
   </li>
   <li class="nav-item is-current-page" data-depth="2">
     <a class="nav-link" href="tls-console.html">Enabling TLS/SSL in the EAP Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vault.html">Secure Credential Storage Using Elytron Credential Store</a>
   </li>
   <li class="nav-item" data-depth="2">
     <a class="nav-link" href="sso-console.html">EAP Web Console Single Sign-On using OIDC</a>
@@ -274,7 +277,7 @@ key-store   is key-store-ffd473f8-e220-4d46-9d41-549dc4085427</code></pre>
 <p>Make note of the long UUID value for the <code>key-store</code>. You can reference this unique ID for CLI operations on the keystore. Navigate to <a href="https://eap1:9993" class="bare">https://eap1:9993</a> to access the web console using TLS.</p>
 </li>
 <li>
-<p>The EAP CLI also offers a convienient interactive tool to generate production quality TLS certificates for <strong>Let&#8217;s Encrypt</strong>. See <a href="https://wildfly-security.github.io/wildfly-elytron/blog/obtaining-certificates-from-lets-encrypt-using-the-wildfly-cli/" class="bare">https://wildfly-security.github.io/wildfly-elytron/blog/obtaining-certificates-from-lets-encrypt-using-the-wildfly-cli/</a> for more details.</p>
+<p>The EAP CLI also offers a convenient interactive tool to generate production quality TLS certificates for <strong>Let&#8217;s Encrypt</strong>. See <a href="https://wildfly-security.github.io/wildfly-elytron/blog/obtaining-certificates-from-lets-encrypt-using-the-wildfly-cli/" class="bare">https://wildfly-security.github.io/wildfly-elytron/blog/obtaining-certificates-from-lets-encrypt-using-the-wildfly-cli/</a> for more details.</p>
 </li>
 <li>
 <p>To disable TLS for the web console, run the following command:</p>
@@ -306,7 +309,7 @@ key-store   is key-store-ffd473f8-e220-4d46-9d41-549dc4085427</code></pre>
 </div>
 <nav class="pagination">
   <span class="prev"><a href="eap-security.html">Enabling or Disabling the EAP Management (Web) Console</a></span>
-  <span class="next"><a href="sso-console.html">EAP Web Console Single Sign-On using OIDC</a></span>
+  <span class="next"><a href="vault.html">Secure Credential Storage Using Elytron Credential Store</a></span>
 </nav>
 </article>
   </div>
