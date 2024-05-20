@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Enabling TLS/SSL in the EAP Web Console :: Red Hat JBoss EAP Administration II</title>
+    <link rel="prev" href="eap-security.html">
+    <link rel="next" href="vault.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img
+          src="../../../_/img/redhat-logo.png"
+          height="40px"
+          alt="Red Hat"
+        /></a>
+      <a
+        class="navbar-item"
+        style="font-size: 24px; color: white"
+        href="../../.."
+      >Red Hat JBoss EAP Administration II</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a
+          class="navbar-item"
+          href="https://github.com/RedHatQuickCourses/eap-admin2/issues"
+          target="_blank"
+        >Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="eap-admin2" data-version="8">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat JBoss EAP Administration II</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../adv-install/index.html">Advanced Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/response-files.html">Automated Installer Script</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/adv-patching.html">Patches and Updates</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../domain/index.html">JBoss EAP Domain Mode</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/domain-mode.html">JBoss EAP Domain Mode Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/domain-deployment.html">Deploying Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/jvm-config.html">JVM Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../cluster/index.html">Clustering and High Availability</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-udp.html">Standalone Mode Clustering (UDP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-tcp.html">Standalone Mode Clustering (TCP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/load-balancing.html">Load Balancing JBoss EAP Instances</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Securing EAP</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="eap-security.html">Enabling or Disabling the EAP Management (Web) Console</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="tls-console.html">Enabling TLS/SSL in the EAP Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="vault.html">Secure Credential Storage Using Elytron Credential Store</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="sso-console.html">EAP Web Console Single Sign-On using OIDC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat JBoss EAP Administration II</span>
+    <span class="version">8</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat JBoss EAP Administration II</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">8</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat JBoss EAP Administration II</a></li>
+    <li><a href="index.html">Securing EAP</a></li>
+    <li><a href="tls-console.html">Enabling TLS/SSL in the EAP Web Console</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Enabling TLS/SSL in the EAP Web Console</h1>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/configuring_ssltls_in_jboss_eap/index#enabling-one-way-ssl-tls-for-management-interfaces-by-using-the-subsystem-commands_enabling-one-way-ssl-tls-for-management-interfaces" target="_blank" rel="noopener">Enabling TLS for EAP Web Console</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/configuring_ssltls_in_jboss_eap/index#disabling-ssl-tls-for-management-interfaces-by-using-the-security-command_enabling-one-way-ssl-tls-for-management-interfaces" target="_blank" rel="noopener">Disabling TLS for EAP Web Console</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/configuring_ssltls_in_jboss_eap/index#enabling-one-way-ssl-tls-for-management-interfaces-by-using-the-subsystem-commands_enabling-one-way-ssl-tls-for-management-interfaces" target="_blank" rel="noopener">EAP CLI configuration for enabling web console TLS</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_enabling_and_disabling_tls_for_the_eap_web_console"><a class="anchor" href="#_exercise_enabling_and_disabling_tls_for_the_eap_web_console"></a>Exercise: Enabling and Disabling TLS for the EAP Web Console</h2>
+<div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start JBoss EAP as the <code>jboss</code> user.</p>
+</li>
+<li>
+<p>Navigate to <a href="https://eap1:8443" class="bare">https://eap1:8443</a>. By default, JBoss EAP generates a self-signed certificate for applications on start up. Inspect the start up logs:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">...
+...WFLYELY01085: Generated self-signed certificate at ...jboss-eap-8.0/standalone/configuration/application.keystore. Please note that self-signed certificates are not secure and should only be used for testing purposes. Do not use this self-signed certificate in production.
+SHA-1 fingerprint of the generated key is 2a:6f:bd:4c:76:7a:ab:a0:e5:1e:a5:ed:31:5c:28:83:02:d3:7a:63
+SHA-256 fingerprint of the generated key is 2a:80:21:67:e2:c1:64:75:9d:14:1d:ea:87:c8:c4:ec:86:a7:5e:40:16:01:f5:5b:94:32:37:85:07:c7:ca:5a
+...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>The EAP CLI offers convienient short cut commands to enable TLS for the EAP web console. Connect to the EAP CLI and run the following command to create a new self-signed certificate for the web console. You will be asked a sequence of questions. An example interactive session output is given below:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9990 /] security enable-ssl-management --interactive
+Please provide required pieces of information to enable SSL:
+
+Certificate info:
+Key-store file name (default management.keystore):
+Password (blank generated): redhat123
+What is your first and last name? [Unknown]: EAP Admin
+What is the name of your organizational unit? [Unknown]: MyOrg
+What is the name of your organization? [Unknown]: RedHat
+What is the name of your City or Locality? [Unknown]: Raleigh
+What is the name of your State or Province? [Unknown]: North Caroline
+What is the two-letter country code for this unit? [Unknown]: NC
+Is CN=EAP Admin, OU=MyOrg, O=RedHat, L=Raleigh, ST=North Caroline, C=NC correct y/n [y]?y
+Validity (in days, blank default): 30
+Alias (blank generated):
+Enable SSL Mutual Authentication y/n (blank n):n
+
+SSL options:
+key store file: management.keystore
+distinguished name: CN=EAP Admin, OU=MyOrg, O=RedHat, L=Raleigh, ST=North Caroline, C=NC
+password: redhat123
+validity: 30
+alias: alias-ffd473f8-e220-4d46-9d41-549dc4085427
+Server keystore file management.keystore, certificate file management.pem and management.csr file will be generated in server configurat
+ion directory.
+
+Do you confirm y/n :y
+Unable to connect due to unrecognised server certificate
+Subject    - CN=EAP Admin,OU=MyOrg,O=RedHat,L=Raleigh,ST=North Caroline,C=NC
+Issuer     - CN=EAP Admin, OU=MyOrg, O=RedHat, L=Raleigh, ST=North Caroline, C=NC
+Valid From - Mon May 06 11:42:43 IST 2024
+Valid To   - Wed Jun 05 11:42:43 IST 2024
+MD5 : e7:b2:f1:87:1f:88:e7:8b:df:c8:a1:07:75:7a:0c:47
+SHA1 : 49:ab:d9:37:83:f6:39:a5:46:60:1b:5f:c2:83:26:df:a6:5a:09:e1
+
+Accept certificate? [N]o, [T]emporarily, [P]ermanently : P
+Server reloaded.
+SSL enabled for http-interface
+ssl-context is ssl-context-ffd473f8-e220-4d46-9d41-549dc4085427
+key-manager is key-manager-ffd473f8-e220-4d46-9d41-549dc4085427
+key-store   is key-store-ffd473f8-e220-4d46-9d41-549dc4085427</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Make note of the long UUID value for the <code>key-store</code>. You can reference this unique ID for CLI operations on the keystore. Navigate to <a href="https://eap1:9993" class="bare">https://eap1:9993</a> to access the web console using TLS.</p>
+</li>
+<li>
+<p>The EAP CLI also offers a convenient interactive tool to generate production quality TLS certificates for <strong>Let&#8217;s Encrypt</strong>. See <a href="https://wildfly-security.github.io/wildfly-elytron/blog/obtaining-certificates-from-lets-encrypt-using-the-wildfly-cli/" class="bare">https://wildfly-security.github.io/wildfly-elytron/blog/obtaining-certificates-from-lets-encrypt-using-the-wildfly-cli/</a> for more details.</p>
+</li>
+<li>
+<p>To disable TLS for the web console, run the following command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] security disable-ssl-management
+Server reloaded.
+Reconnected to server.
+SSL disabled for http-interface</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>To re-enable TLS with the certificate you created earlier, run the following:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9990 /] security enable-ssl-management --key-store-name=key-store-ffd473f8-e220-4d46-9d41-549dc4085427
+Server reloaded.
+SSL enabled for http-interface
+ssl-context is ssl-context-ffd473f8-e220-4d46-9d41-549dc4085427
+key-manager is key-manager-ffd473f8-e220-4d46-9d41-549dc4085427
+key-store   is key-store-ffd473f8-e220-4d46-9d41-549dc4085427</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="eap-security.html">Enabling or Disabling the EAP Management (Web) Console</a></span>
+  <span class="next"><a href="vault.html">Secure Credential Storage Using Elytron Credential Store</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
