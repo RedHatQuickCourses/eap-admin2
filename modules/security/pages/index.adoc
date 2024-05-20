@@ -1,3 +1,5 @@
-= Security
+= Securing EAP
 
-This is the home page of _Chapter 3_ in the *hello* quick course....
+This chapter deals with securing EAP and providing security related features and functionality to applications deployed on EAP.
+
+NOTE: The concept of `security` covers a large surface area, and JBoss EAP offers a large number of subsystems and features depending upon your needs. In this chapter, we will cover only a few important modules that concern securing EAP _itself_, and not focus on application level security (Application security will be covered in a developer focused course later in the learning path).

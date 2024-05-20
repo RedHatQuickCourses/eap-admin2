@@ -7,4 +7,3 @@ nav:
   - modules/domain/nav.adoc
   - modules/cluster/nav.adoc
   - modules/security/nav.adoc
-  - modules/openshift/nav.adoc
