@@ -1,5 +1,7 @@
 = Enabling or Disabling the EAP Management (Web) Console
 
+In certain scenarios, you may want to disable the EAP web console and allow configuration only via the EAP CLI or by manually editing the XML configuration files. This section shows yu how to disable and enable the EAP management console.
+
 == References
 
 * https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/getting_started_with_management_console/index#enable-or-disable-the-management-console_default[Enable or Disable EAP Management Console^]

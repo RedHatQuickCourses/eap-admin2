@@ -1,5 +1,7 @@
 = EAP Web Console Single Sign-On using OIDC
 
+This section shows you how to use Keycloak Single Sign-On (SSO) to control access to the JBoss EAP management console. Keycloak is an OIDC provider that manages _identities_. You can configure Keycloak to proxy and manage identity information stored in databases, LDAP and Microsoft Active Directory (AD), as well as social logins from Google, GitHub, Facebook, Microsoft Live, and more.
+
 == References
 
 * https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/using_single_sign-on_with_jboss_eap/index#securing-the-jboss-eap-management-console-with-an-openid-provider_default[Securing the JBoss EAP management console with an OpenID provider^]

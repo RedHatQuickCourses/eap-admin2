@@ -1,5 +1,9 @@
 = Secure Credential Storage Using Elytron Credential Store
 
+So far, you have been configuring various EAP subsystems by adding plain text strings, even in cases where the information is sensitive - for example, database connection and password information. In previous JBoss EAP versions, you would configure _vaults_ where you can securely store sensitive information. In JBoss EAP 8, the Elytron subsystem has replaced the older vault system and offers a number of features to simplify storing sensitive configuration information.
+
+Elytron uses the JVM *keystores* to manage sets of related key-value pairs that contain sensitive information. Instead of hard-coding values in plain text, you can refer to keystores and the keys (*aliases*) in them to fetch information.
+
 == References
 
 * https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/secure_storage_of_credentials_in_jboss_eap/index#credentials_and_credential_stores_in_elytron[Credentials and credential stores in Elytron^]
