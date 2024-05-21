@@ -172,6 +172,65 @@
 <article class="doc">
 <h1 class="page">Standalone Mode Clustering (UDP)</h1>
 <div class="sect1">
+<h2 id="_concepts_and_terminology"><a class="anchor" href="#_concepts_and_terminology"></a>Concepts and Terminology</h2>
+<div class="sectionbody">
+<div class="dlist">
+<dl>
+<dt class="hdlist1">Load Balancing</dt>
+<dd>
+<p>The ability of a system to spread the request load among a set of application servers</p>
+</dd>
+<dt class="hdlist1">Failover</dt>
+<dd>
+<p>The ability of a system to withstand failures among one or more application servers, thereby providing uninterrupted service to clients</p>
+</dd>
+<dt class="hdlist1">Clustering</dt>
+<dd>
+<p>A generic term that encompasses both load balancing and failover. The mechanism by which a number of smaller, independent units of computation make up a logical whole.</p>
+</dd>
+<dt class="hdlist1">JGroups</dt>
+<dd>
+<p>JGroups is a library for reliable messaging, and can be used to create clusters whose nodes can send messages to each other. <strong>JGroups</strong> can enable cluster communication using multi-cast (UDP) and unicast (TCP) protocols.</p>
+</dd>
+<dt class="hdlist1">Infinispan</dt>
+<dd>
+<p>A library used for distributed caching, and replicating objects between caches. The <strong>Infinispan</strong> subsystem provides caching and state replication support for HTTP sessions, EJB instances, and other JBoss EAP services that need high availability.</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>Clustering in JBoss EAP is enabled by the <strong>jgroups</strong>, <strong>infinispan</strong>, and <strong>modcluster</strong> subsystems.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Clustering can be configured in both <em>standalone</em> and <em>managed domain</em> modes. The <strong>ha</strong> and <strong>full-ha</strong> profiles have subsystems in them to enable clustering and high availability.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+TCP has more overhead and is often considered slower than UDP since it handles error checking, packet ordering, and congestion control itself. JGroups handles these features for UDP, whereas TCP guarantees them itself. TCP is a good choice when using JGroups on unreliable or high congestion networks, or when multicast is not available. UDP is useful in scenarios where you need more performance from your cluster, and the network is fully under your control and is secured.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>This section focuses on UDP based clustering, while the next section focuses on TCP based clustering.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
 <div class="sectionbody">
 <div class="ulist">

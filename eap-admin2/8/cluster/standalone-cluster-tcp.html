@@ -171,6 +171,38 @@
 </aside>
 <article class="doc">
 <h1 class="page">Standalone Mode Clustering (TCP)</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>By default, the tcp stack also uses multicast to discover other cluster members by using the MPING JGroups protocol. JGroups provides other discovery protocols, such as PING, TCPPING, TCPGOSSSIP, JDBC_PING, FILE_PING, DNS_PING, or KUBE_PING. See the references section to learn more about each discovery protocol.</p>
+</div>
+<div class="paragraph">
+<p>If you need to avoid multicast communication, then you can customize the tcp stack by changing the discovery protocol to either TCPPING or TCPGOSSIP.</p>
+</div>
+<div class="paragraph">
+<p><strong>TCPPING</strong> is a JGroups protocol that uses a static list to define the cluster members, and uses unicast as an alternative to multicast.</p>
+</div>
+<div class="paragraph">
+<p>The following parameters are specific to this protocol:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>initial_hosts</strong> - A list of the hosts to look up for cluster membership.</p>
+</li>
+<li>
+<p><strong>port_range</strong> - The range that the protocol uses to search for hosts based on the initial port. For example, a port range of two on an initial port of 7600 results in the TCPPING protocol searching for a viable host on ports 7600 and 7601.</p>
+</li>
+<li>
+<p><strong>TCPGOSSIP</strong> - Discovers members of a cluster by using an external gossip router.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>In this section, we focus on TCP based clustering using the TCPPING protocol and a static list of initial hosts that lists the cluster members.</p>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
 <div class="sectionbody">

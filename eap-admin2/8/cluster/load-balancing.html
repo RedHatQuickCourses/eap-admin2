@@ -171,6 +171,53 @@
 </aside>
 <article class="doc">
 <h1 class="page">Load Balancing JBoss EAP Instances</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the previous sections, you configured the Infinispan and JGroups subsystems to replicate HTTP sessions. In this section, you will learn how to set up a network load balancer to direct HTTP requests to JBoss EAP server instances that are cluster members for <em>load balancing</em>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Session affinity</strong>, also known as <em>sticky sessions</em>, is a web proxy mechanism that sends all requests from the same user to the same back-end web server. If you do not have session affinity, then user requests can go to different back-end web servers.</p>
+</li>
+<li>
+<p>Jakarta EE web engines use an HTTP cookie to store a unique <em>session ID</em>. Only load balancers that can handle HTTP cookies can balance requests and maintain session affinity.</p>
+</li>
+<li>
+<p><strong>Undertow</strong> is a full-featured web server, capable of replacing traditional web server software such as Apache Httpd and Microsoft IIS for most use cases. Undertow includes a web proxy component that can do load balancing.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_configuring_undertow_as_a_static_load_balancer"><a class="anchor" href="#_configuring_undertow_as_a_static_load_balancer"></a>Configuring Undertow as a Static Load Balancer</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Configuring undertow as a static load balancer involves the following high-level steps:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Add outbound socket bindings pointing to each cluster member.</p>
+</li>
+<li>
+<p>Add a reverse-proxy handler to the default undertow server.</p>
+</li>
+<li>
+<p>Add each cluster member to the proxy handler.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Jakarta EE web containers usually employ the <strong>JSESSIONID</strong> HTTP cookie to store a unique session identifier (session ID), as mandated by the Servlet API specification. This cookie value is an index to retrieve user session data stored in memory.</p>
+</div>
+<div class="paragraph">
+<p>Undertow uses the session ID cookie to provide an efficient session affinity implementation. Undertow appends the <strong>jboss.server.node</strong> system property to the session ID. The load balancer intercepts the next requests from that browser, and send them to the same backend server.</p>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
 <div class="sectionbody">
@@ -184,7 +231,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_exercise_load_balancing_jboss_eap_instances_using_mod_undertow"><a class="anchor" href="#_exercise_load_balancing_jboss_eap_instances_using_mod_undertow"></a>Exercise: Load Balancing JBoss EAP Instances using mod_undertow</h2>
+<h2 id="_exercise_load_balancing_jboss_eap_instances_using_the_undertow_web_server"><a class="anchor" href="#_exercise_load_balancing_jboss_eap_instances_using_the_undertow_web_server"></a>Exercise: Load Balancing JBoss EAP Instances using the Undertow Web Server</h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
