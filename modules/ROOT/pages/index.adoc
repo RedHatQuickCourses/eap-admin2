@@ -30,11 +30,11 @@ The PTL team acknowledges the valuable contributions of the following Red Hat as
 
 == Classroom Environment
 
-NOTE: We are planning to provide a classroom environment for Red Hat associates and select Red Hat partners on the Red Hat Demo Platform (RHDP). This is a work in progress. Classroom links will be updated here as and when the classroom is ready. Until then, we recommend using your own servers or VMs to run the hands-on labs in this learning path.
+NOTE: We are planning to provide a classroom environment for Red Hat associates and select Red Hat partners on the Red Hat Demo Platform (RHDP). This is a work in progress. Classroom links will be updated here as and when the classroom is ready. Leave a https://github.com/RedHatQuickCourses/eap-admin1/issues/16#issue-2300120102[comment or +1 this issue^] to up vote. Until then, we recommend using your own servers or VMs to run the hands-on labs in this learning path.
 
 For the hands-on labs in this course, you need to provision the following:
 
-* 2 RHEL 9 or CentOS Stream 9 VMs - each with at least 8 vCPU, 16GB RAM, 2 NICs and 80GB hard disk
+* 3 RHEL 9 or CentOS Stream 9 VMs - each with at least 8 vCPU, 16GB RAM, 2 NICs and 80GB hard disk
 * An OpenShift Container Platform cluster with at least 8vCPU, 16GB RAM, 100GB disk. You can provision a cluster using any of the below listed modalities:
 ** Bare metal, VMs or on OpenStack
 ** Single Node OpenShift (SNO) cluster
