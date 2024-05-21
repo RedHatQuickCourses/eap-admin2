@@ -171,6 +171,16 @@
 </aside>
 <article class="doc">
 <h1 class="page">Secure Credential Storage Using Elytron Credential Store</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>So far, you have been configuring various EAP subsystems by adding plain text strings, even in cases where the information is sensitive - for example, database connection and password information. In previous JBoss EAP versions, you would configure <em>vaults</em> where you can securely store sensitive information. In JBoss EAP 8, the Elytron subsystem has replaced the older vault system and offers a number of features to simplify storing sensitive configuration information.</p>
+</div>
+<div class="paragraph">
+<p>Elytron uses the JVM <strong>keystores</strong> to manage sets of related key-value pairs that contain sensitive information. Instead of hard-coding values in plain text, you can refer to keystores and the keys (<strong>aliases</strong>) in them to fetch information.</p>
+</div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
 <div class="sectionbody">
