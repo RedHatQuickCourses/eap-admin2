@@ -6,10 +6,10 @@
 Welcome to this quick course on _Advanced JBoss EAP Administration_.
 This course is the `third` in a series of `seven` courses about Red Hat JBoss EAP:
 
-1. Introduction to Red Hat JBoss EAP (_Under Development_)
-2. Red Hat JBoss EAP Administration I  (_Under Development_)
+1. https://training-lms.redhat.com/sso/saml/auth/rhlpint?RelayState=deeplinkoffering%3D59719403[Introduction to Red Hat JBoss EAP^]
+2. https://redhatquickcourses.github.io/eap-admin1[Red Hat JBoss EAP Administration I^]
 3. *Red Hat JBoss EAP Administration II (_This course_)*
-4. Migrating to Red Hat JBoss EAP 8 (_Under Development_)
+4. https://demo.redhat.com/catalog?search=eap+8&item=babylon-catalog-prod%2Fsandboxes-gpte.jboss-eap-migration.prod[Migrating to Red Hat JBoss EAP 8^]
 5. Red Hat JBoss EAP 8 Deployment in Public Cloud Infrastructures (_Under Development_)
 6. Developing Applications for Red Hat JBoss EAP 8 (_Under Development_)
 7. Red Hat JBoss EAP 8 Workshop (_Under Development_)
@@ -30,13 +30,9 @@ The PTL team acknowledges the valuable contributions of the following Red Hat as
 
 == Classroom Environment
 
-=== For Red Hat Associates
+NOTE: We are planning to provide a classroom environment for Red Hat associates and select Red Hat partners on the Red Hat Demo Platform (RHDP). This is a work in progress. Classroom links will be updated here as and when the classroom is ready. Until then, we recommend using your own servers or VMs to run the hands-on labs in this learning path.
 
-Red Hat associates and others who have access to the Red Hat Demo Platform (RHDP) should continue to use the _TBD_ catalog item that you provisioned in the _Red Hat JBoss EAP Administration I_ course.
-
-=== For Red Hat Partners
-
-Red Hat partners and others who do not have access to RHDP, should provision the following on their own infrastructure:
+For the hands-on labs in this course, you need to provision the following:
 
 * 2 RHEL 9 or CentOS Stream 9 VMs - each with at least 8 vCPU, 16GB RAM, 2 NICs and 80GB hard disk
 * An OpenShift Container Platform cluster with at least 8vCPU, 16GB RAM, 100GB disk. You can provision a cluster using any of the below listed modalities:
@@ -45,8 +41,6 @@ Red Hat partners and others who do not have access to RHDP, should provision the
 ** OpenShift Local
 ** Red Hat Hybrid Cloud Console (https://console.redhat.com)
 ** OpenShift on Hyperscaler clouds - ROSA or ARO
-
-NOTE: TODO: Add more details of DNS names, IPs and a nice network diagram
 
 == Prerequisites
 
@@ -61,10 +55,8 @@ NOTE: TODO: Add more details of DNS names, IPs and a nice network diagram
 The overall objectives of this course include:
 
 * Automated installation using JBoss EAP Installer Response files
-* Automated installation and configuration of JBoss EAP using Ansible Middleware
 * JBoss EAP Domain mode configuration and deployment
 * JVM configuration and optimization for JBoss EAP applications
 * Clustering and High Availability in JBoss EAP
 * Securing JBoss EAP Applications
 * Configuring OpenID Connect which was introduced with EAP 8.0
-* Deploying EAP applications on OpenShift
