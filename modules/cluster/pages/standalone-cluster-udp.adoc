@@ -1,5 +1,21 @@
 = Standalone Mode Clustering (UDP)
 
+== Concepts and Terminology
+
+Load Balancing:: The ability of a system to spread the request load among a set of application servers
+Failover:: The ability of a system to withstand failures among one or more application servers, thereby providing uninterrupted service to clients
+Clustering:: A generic term that encompasses both load balancing and failover. The mechanism by which a number of smaller, independent units of computation make up a logical whole.
+JGroups:: JGroups is a library for reliable messaging, and can be used to create clusters whose nodes can send messages to each other. *JGroups* can enable cluster communication using multi-cast (UDP) and unicast (TCP) protocols.
+Infinispan:: A library used for distributed caching, and replicating objects between caches. The *Infinispan* subsystem provides caching and state replication support for HTTP sessions, EJB instances, and other JBoss EAP services that need high availability.
+
+Clustering in JBoss EAP is enabled by the *jgroups*, *infinispan*, and *modcluster* subsystems. 
+
+IMPORTANT: Clustering can be configured in both _standalone_ and _managed domain_ modes. The *ha* and *full-ha* profiles have subsystems in them to enable clustering and high availability.
+
+IMPORTANT: TCP has more overhead and is often considered slower than UDP since it handles error checking, packet ordering, and congestion control itself. JGroups handles these features for UDP, whereas TCP guarantees them itself. TCP is a good choice when using JGroups on unreliable or high congestion networks, or when multicast is not available. UDP is useful in scenarios where you need more performance from your cluster, and the network is fully under your control and is secured.
+
+This section focuses on UDP based clustering, while the next section focuses on TCP based clustering.
+
 == References
 
 * https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_high_availability#intro_to_ha[Configuring High Availability in JBoss EAP]

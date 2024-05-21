@@ -1,5 +1,19 @@
 = Standalone Mode Clustering (TCP)
 
+By default, the tcp stack also uses multicast to discover other cluster members by using the MPING JGroups protocol. JGroups provides other discovery protocols, such as PING, TCPPING, TCPGOSSSIP, JDBC_PING, FILE_PING, DNS_PING, or KUBE_PING. See the references section to learn more about each discovery protocol.
+
+If you need to avoid multicast communication, then you can customize the tcp stack by changing the discovery protocol to either TCPPING or TCPGOSSIP.
+
+*TCPPING* is a JGroups protocol that uses a static list to define the cluster members, and uses unicast as an alternative to multicast.
+
+The following parameters are specific to this protocol:
+
+* *initial_hosts* - A list of the hosts to look up for cluster membership.
+* *port_range* - The range that the protocol uses to search for hosts based on the initial port. For example, a port range of two on an initial port of 7600 results in the TCPPING protocol searching for a viable host on ports 7600 and 7601.
+* *TCPGOSSIP* - Discovers members of a cluster by using an external gossip router.
+
+In this section, we focus on TCP based clustering using the TCPPING protocol and a static list of initial hosts that lists the cluster members.
+
 == References
 
 * https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_high_availability#switch_default_jgroups_channel_tcp[Configuring TCP based clustering in JBoss EAP]

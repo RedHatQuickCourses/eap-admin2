@@ -1,10 +1,30 @@
 = Load Balancing JBoss EAP Instances
 
+In the previous sections, you configured the Infinispan and JGroups subsystems to replicate HTTP sessions. In this section, you will learn how to set up a network load balancer to direct HTTP requests to JBoss EAP server instances that are cluster members for _load balancing_.
+
+* *Session affinity*, also known as _sticky sessions_, is a web proxy mechanism that sends all requests from the same user to the same back-end web server. If you do not have session affinity, then user requests can go to different back-end web servers.
+
+* Jakarta EE web engines use an HTTP cookie to store a unique _session ID_. Only load balancers that can handle HTTP cookies can balance requests and maintain session affinity. 
+
+* *Undertow* is a full-featured web server, capable of replacing traditional web server software such as Apache Httpd and Microsoft IIS for most use cases. Undertow includes a web proxy component that can do load balancing.
+
+== Configuring Undertow as a Static Load Balancer
+
+Configuring undertow as a static load balancer involves the following high-level steps:
+
+* Add outbound socket bindings pointing to each cluster member.
+* Add a reverse-proxy handler to the default undertow server.
+* Add each cluster member to the proxy handler.
+
+Jakarta EE web containers usually employ the *JSESSIONID* HTTP cookie to store a unique session identifier (session ID), as mandated by the Servlet API specification. This cookie value is an index to retrieve user session data stored in memory.
+
+Undertow uses the session ID cookie to provide an efficient session affinity implementation. Undertow appends the *jboss.server.node* system property to the session ID. The load balancer intercepts the next requests from that browser, and send them to the same backend server.
+
 == References
 
 * https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html/configuration_guide/configuring_high_availability#configuring_jboss_eap_load_balancer[JBoss EAP Load Balancer]
 
-== Exercise: Load Balancing JBoss EAP Instances using mod_undertow
+== Exercise: Load Balancing JBoss EAP Instances using the Undertow Web Server
 
 === Pre-requisites
 
