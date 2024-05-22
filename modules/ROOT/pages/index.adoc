@@ -4,15 +4,14 @@
 == Introduction
 
 Welcome to this quick course on _Advanced JBoss EAP Administration_.
-This course is the `third` in a series of `seven` courses about Red Hat JBoss EAP:
+This course is the `third` in a series of `four` courses about Red Hat JBoss EAP:
 
-1. https://training-lms.redhat.com/sso/saml/auth/rhlpint?RelayState=deeplinkoffering%3D59719403[Introduction to Red Hat JBoss EAP^]
-2. https://redhatquickcourses.github.io/eap-admin1[Red Hat JBoss EAP Administration I^]
-3. *Red Hat JBoss EAP Administration II (_This course_)*
-4. https://demo.redhat.com/catalog?search=eap+8&item=babylon-catalog-prod%2Fsandboxes-gpte.jboss-eap-migration.prod[Migrating to Red Hat JBoss EAP 8^]
-5. Red Hat JBoss EAP 8 Deployment in Public Cloud Infrastructures (_Under Development_)
-6. Developing Applications for Red Hat JBoss EAP 8 (_Under Development_)
-7. Red Hat JBoss EAP 8 Workshop (_Under Development_)
+. Introduction to Red Hat JBoss EAP
+.. https://training-lms.redhat.com/sso/saml/auth/rhlpint?RelayState=deeplinkoffering%3D59719403[For Red Hat Associates^]
+.. https://training-lms.redhat.com/sso/saml/auth/rhopen?RelayState=deeplinkoffering%3D59719502[For Red Hat Partners^]
+. https://redhatquickcourses.github.io/eap-admin1[Red Hat JBoss EAP Administration I^]
+. *Red Hat JBoss EAP Administration II (_This course_)*
+. https://demo.redhat.com/catalog?search=eap+8&item=babylon-catalog-prod%2Fsandboxes-gpte.jboss-eap-migration.prod[Migrating to Red Hat JBoss EAP 8^]
 
 This course covers advanced JBoss EAP installation and upgrade methods, JBoss EAP Domain mode configuration and management, clustering, security and high availability. You also learn about deploying JBoss EAP applications on the OpenShift Container Platform.
 
