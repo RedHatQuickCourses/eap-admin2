@@ -84,4 +84,4 @@ image::temp-output-other.png[Temperature Converter Application]
 +
 NOTE: You can see the same output when you navigate to http://ip_of_eap2:8230/temperature-converter
 +
-NOTE: Remember to open up firewall ports 8080 and 8230 on the eap2 VM to ensure application output
+NOTE: Remember to open up firewall ports 8080 and 8230 on the eap2 VM to ensure application output.
