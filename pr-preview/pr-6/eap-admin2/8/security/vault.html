@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Secure Credential Storage Using Elytron Credential Store :: Red Hat JBoss EAP Administration II</title>
+    <link rel="prev" href="tls-console.html">
+    <link rel="next" href="sso-console.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img
+          src="../../../_/img/redhat-logo.png"
+          height="40px"
+          alt="Red Hat"
+        /></a>
+      <a
+        class="navbar-item"
+        style="font-size: 24px; color: white"
+        href="../../.."
+      >Red Hat JBoss EAP Administration II</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a
+          class="navbar-item"
+          href="https://github.com/RedHatQuickCourses/eap-admin2/issues"
+          target="_blank"
+        >Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="eap-admin2" data-version="8">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat JBoss EAP Administration II</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../adv-install/index.html">Advanced Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/response-files.html">Automated Installer Script</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../adv-install/adv-patching.html">Patches and Updates</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../domain/index.html">JBoss EAP Domain Mode</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/domain-mode.html">JBoss EAP Domain Mode Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/domain-deployment.html">Deploying Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/jvm-config.html">JVM Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../cluster/index.html">Clustering and High Availability</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-udp.html">Standalone Mode Clustering (UDP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-tcp.html">Standalone Mode Clustering (TCP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/load-balancing.html">Load Balancing JBoss EAP Instances</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Securing EAP</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="eap-security.html">Enabling or Disabling the EAP Management (Web) Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="tls-console.html">Enabling TLS/SSL in the EAP Web Console</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="vault.html">Secure Credential Storage Using Elytron Credential Store</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="sso-console.html">EAP Web Console Single Sign-On using OIDC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat JBoss EAP Administration II</span>
+    <span class="version">8</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat JBoss EAP Administration II</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">8</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat JBoss EAP Administration II</a></li>
+    <li><a href="index.html">Securing EAP</a></li>
+    <li><a href="vault.html">Secure Credential Storage Using Elytron Credential Store</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Secure Credential Storage Using Elytron Credential Store</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>So far, you have been configuring various EAP subsystems by adding plain text strings, even in cases where the information is sensitive - for example, database connection and password information. In previous JBoss EAP versions, you would configure <em>vaults</em> where you can securely store sensitive information. In JBoss EAP 8, the Elytron subsystem has replaced the older vault system and offers a number of features to simplify storing sensitive configuration information.</p>
+</div>
+<div class="paragraph">
+<p>Elytron uses the JVM <strong>keystores</strong> to manage sets of related key-value pairs that contain sensitive information. Instead of hard-coding values in plain text, you can refer to keystores and the keys (<strong>aliases</strong>) in them to fetch information.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/secure_storage_of_credentials_in_jboss_eap/index#credentials_and_credential_stores_in_elytron" target="_blank" rel="noopener">Credentials and credential stores in Elytron</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/secure_storage_of_credentials_in_jboss_eap/index#proc_creating-a-credential-store-for-a-standalone-server_default" target="_blank" rel="noopener">Creating a credential-store for a standalone server</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/secure_storage_of_credentials_in_jboss_eap/index#assembly_credential-store-operations-using-the-wildfly-elytron-tool_default" target="_blank" rel="noopener">Credential store operations using the WildFly Elytron tool</a></p>
+</li>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/secure_storage_of_credentials_in_jboss_eap/index#con_enrypted-expressions-in-elytron_default" target="_blank" rel="noopener">Encrypted expressions in Elytron</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_1_storing_database_passwords_securely_in_jboss_eap_configuration_files"><a class="anchor" href="#_exercise_1_storing_database_passwords_securely_in_jboss_eap_configuration_files"></a>Exercise 1: Storing Database Passwords Securely in JBoss EAP Configuration Files</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>You need a MySQL database to test the secure database access credentials. The easiest way to test this is to run a MySQL database as a container using <code>podman</code> or <code>docker</code>.</p>
+</li>
+<li>
+<p>Run the MySQL DB container. Replace the <code>podman</code> command with <code>docker</code> if your operating system cannot run <code>podman</code>:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 ~]$ podman run -d \
+  --name mysql-eap-test \
+  -e MYSQL_USER=eap \
+  -e MYSQL_PASSWORD=mysql123 \
+  -e MYSQL_DATABASE=testdb \
+  -e MYSQL_ROOT_PASSWORD=rootmysql123 \
+  mysql:8.0</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>To verify that the MySQL DB container started successfully:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 ~]$ podman ps
+CONTAINER ID  IMAGE                      COMMAND     CREATED        STATUS        PORTS       NAMES
+5970ecedf3e3  docker.io/library/mysql:8  mysqld      4 seconds ago  Up 4 seconds              mysql-eap-test</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If the DB container fails to start, run the <code>podman logs mysql-eap-test</code> command to inspect the start up logs and fix any issues.</p>
+</li>
+<li>
+<p>To restart after failed start ups and other issues, run <code>podman stop mysql-eap-test</code> followed by <code>podman rm mysql-eap-test</code>, and then run the start up command again.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_steps"><a class="anchor" href="#_steps"></a>Steps</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>You can run this exercise either on <code>eap1</code> or <code>eap2</code>. We will use a single EAP instance to test. In my case, I am using the <code>eap1</code> VM to run these commands.</p>
+</li>
+<li>
+<p>Start a standalone instance of JBoss EAP 8 on <code>eap1</code> as the <code>jboss</code> user.</p>
+</li>
+<li>
+<p>JBoss EAP provides a file named <code>elytron-tool.sh</code> in the <code>$JBOSS_HOME/bin</code> folder. This command is used to create a credential store to store sensitive information for your applications, for example, database connection information.</p>
+</li>
+<li>
+<p>Create a new credential store using the <code>elytron-tool.sh</code> CLI. You will be prompted twice to enter a password for the store:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 bin]$ ./elytron-tool.sh credential-store \
+  --create \
+  --location "../standalone/configuration/credentials.store"
+Credential store password: *********
+Confirm credential store password: *********
+Credential Store has been successfully created</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>--location</code> argument is a file path relative to the <code>$JBOSS_HOME/bin</code> folder.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Now, you can create an <code>alias</code> for the MySQL database password. You will be prompted for the credential store password:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 bin]$ ./elytron-tool.sh credential-store \
+  --location "../standalone/configuration/credentials.store" \
+  --add mysql-db-pass \
+  --secret mysql123
+Credential store password:
+Alias "mysql-db-pass" has been successfully stored</code></pre>
+</div>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+Do NOT get confused between the credential store password and the database password (The value of the <code>--secret</code> argument. <code>mysql-db-pass</code> is the alias name). The value of the <code>--secret</code> argument must match the MySQL database password you used earlier in the <code>podman run</code> command (<code>-e MYSQL_PASSWORD</code> flag).
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Connect to the JBoss EAP CLI and run the following commands. Add the newly created keystore to JBoss EAP:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 bin]$ ./jboss-cli.sh --connect
+[standalone@localhost:9993 /] /subsystem=elytron/credential-store=my-cred-store:add(location="../standalone/configuration/credentials.store",credential-reference={clear-text=redhat123})
+{"outcome" =&gt; "success"}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The keystore is now referred to by it&#8217;s alias (logical) name <code>my-cred-store</code>. The <code>credential-reference</code> value is the keystore password.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Download the MySQL JDBC driver file and copy it to the <code>$JBOSS_HOME/bin</code> folder:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 ]$ wget https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.4.0/mysql-connector-j-8.4.0.jar
+[jboss@eap1 ]$ cp mysql-connector-j-8.4.0.jar $JBOSS_HOME/bin/</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add a new module for the MySQL database driver, and then add the driver to the EAP configuration (to the <code>datasources</code> subsystem):</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] module add \
+  --name=com.mysql \
+  --resources=mysql-connector-j-8.4.0.jar \
+  --dependencies=javax.api,javax.transaction.api
+
+[standalone@localhost:9993 /] /subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql)
+{"outcome" =&gt; "success"}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add a new MySQL data source using the added driver and module:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] data-source add \
+  --jndi-name=java:/test-mysql-ds \
+  --name=test-mysql-ds \
+  --connection-url=jdbc:mysql://localhost:3306/testdb \
+  --driver-name=mysql \
+  --user-name=eap \
+  --credential-reference={store=my-cred-store, alias=mysql-db-pass}</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Review the <code>--connection-url</code> argument carefully. The name of the database (<code>testdb</code>) must match the <code>-e MYSQL_DATABASE=testdb</code> argument you passed to <code>podman run</code>. Note how, instead of password in plain-text, you pass a <code>--credential-reference</code> with the alias/logical name of the credential store and the alias name (<code>mysql-db-pass</code>), which contains the database password. Imagine the store as a database with key-value pairs. The key name is the alias, and the value is the confidential information you want to store. You can add any number of such key-value pairs in the key store.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Test the database connection:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /subsystem=datasources/data-source=test-mysql-ds:test-connection-in-pool()
+{
+    "outcome" =&gt; "success",
+    "result" =&gt; [true]
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Inspect the XML content in the <code>datasources</code> subsystem that was added by the commands you ran in this exercise:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;subsystem xmlns="urn:jboss:domain:datasources:7.0"&gt;
+  &lt;datasources&gt;
+...
+    &lt;datasource jndi-name="java:/test-mysql-ds" pool-name="test-mysql-ds"&gt;
+      &lt;connection-url&gt;jdbc:mysql://localhost:3306/testdb&lt;/connection-url&gt;
+      &lt;driver&gt;mysql&lt;/driver&gt;
+      &lt;security&gt;
+        &lt;user-name&gt;eap&lt;/user-name&gt;
+        &lt;credential-reference store="my-cred-store" alias="mysql-db-pass"/&gt;
+      &lt;/security&gt;
+    &lt;/datasource&gt;
+    &lt;drivers&gt;
+...
+      &lt;driver name="mysql" module="com.mysql"/&gt;
+    &lt;/drivers&gt;
+  &lt;/datasources&gt;
+&lt;/subsystem&gt;</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exercise_2_storing_encrypted_expressions_in_jboss_eap_configuration_files"><a class="anchor" href="#_exercise_2_storing_encrypted_expressions_in_jboss_eap_configuration_files"></a>Exercise 2: Storing Encrypted Expressions in JBoss EAP Configuration Files</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You avoided writing the database password in plain-text in the EAP configuration file in the previous exercise. However, this is still not optimal because the DB host name, port, database name and user name are still in plain text. Although you can create aliases for these too, a better approach is to encrypt sensitive information using Elytron&#8217;s secret key credential store.</p>
+</div>
+<div class="sect2">
+<h3 id="_pre_requisites_2"><a class="anchor" href="#_pre_requisites_2"></a>Pre-requisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Same as the previous exercise in this section. You need a MySQL database. Run the database as a container as outlined previously.</p>
+</li>
+<li>
+<p>Add a new module for the MySQL JDBC driver, and add the driver for MySQL to the EAP configuration file as outlined in the previous exercise.</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_steps_2"><a class="anchor" href="#_steps_2"></a>Steps</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Start JBoss EAP 8.0 as the <code>jboss</code> on <code>eap1</code>.</p>
+</li>
+<li>
+<p>Connect to the EAP CLI for this instance</p>
+</li>
+<li>
+<p>Create a new secret key credential store:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /subsystem=elytron/secret-key-credential-store=my-secret-store:add(relative-to=jboss.server.config.dir, path=my-secret-store.store)
+{"outcome" =&gt; "success"}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Generate a random key for this store:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /subsystem=elytron/secret-key-credential-store=my-secret-store:export-secret-key(alias=key)
+{
+    "outcome" =&gt; "success",
+    "result" =&gt; {"key" =&gt; "RUxZAUtlihLWFAyiQkMU/lyz3kS0FlUcmAbJFapw5QdDUfFmHA=="}
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Add a resolver that points to the new key:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /subsystem=elytron/expression=encryption:add(resolvers=[{name=my-resolver, credential-store=my-secret-store, secret-key=key}])
+{"outcome" =&gt; "success"}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Now, encrypt the DB password using the resolver:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /subsystem=elytron/expression=encryption:create-expression(resolver=my-resolver, clear-text=mysql123)
+{
+    "outcome" =&gt; "success",
+    "result" =&gt; {"expression" =&gt; "${ENC::my-resolver:RUxZAUMQu9qsmM618jE0WNO1303Jbyi/6OP2l3uhXzg1zXgJZJg=}"}
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>You can also use the `elytron-tool.sh `CLI to generate the encrypted password:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 bin]$ ./elytron-tool.sh credential-store \
+  --location ../standalone/configuration/my-secret-store.store \
+  --type PropertiesCredentialStore \
+  --encrypt key
+Clear text value:
+Confirm clear text value:
+Clear text encrypted to token 'RUxZAUMQ9t/NLolXu0fiaG6GjmecRNPrmhAuYhcFJxRfmhIvjR4=' using alias 'key'.</code></pre>
+</div>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+Run <code>elyton-tool.sh</code> from the OS command line and not from the EAP CLI!
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Now, create a new data source connection using the encrypted string instead of raw text password:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] data-source add \
+  --jndi-name=java:/test-mysql-ds-enc \
+  --name=test-mysql-ds-enc \
+  --connection-url=jdbc:mysql://localhost:3306/testdb \
+  --driver-name=mysql \
+  --user-name=eap \
+  --password=${ENC::my-resolver:RUxZAUMQu9qsmM618jE0WNO1303Jbyi/6OP2l3uhXzg1zXgJZJg=}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Test the connection:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /subsystem=datasources/data-source=test-mysql-ds-enc:test-connection-in-pool()
+{
+    "outcome" =&gt; "success",
+    "result" =&gt; [true]
+}</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Inspect the XML generated by the commands:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">...
+&lt;datasource jndi-name="java:/test-mysql-ds" pool-name="test-mysql-ds"&gt;
+  &lt;connection-url&gt;jdbc:mysql://localhost:3306/testdb&lt;/connection-url&gt;
+  &lt;driver&gt;mysql&lt;/driver&gt;
+  &lt;security&gt;
+    &lt;user-name&gt;eap&lt;/user-name&gt;
+    &lt;credential-reference store="my-cred-store" alias="mysql-db-pass"/&gt;
+  &lt;/security&gt;
+&lt;/datasource&gt;
+&lt;datasource jndi-name="java:/test-mysql-ds-enc" pool-name="test-mysql-ds-enc"&gt;
+  &lt;connection-url&gt;jdbc:mysql://localhost:3306/testdb&lt;/connection-url&gt;
+  &lt;driver&gt;mysql&lt;/driver&gt;
+  &lt;security&gt;
+    &lt;user-name&gt;eap&lt;/user-name&gt;
+    &lt;password&gt;${ENC::my-resolver:RUxZAUMQu9qsmM618jE0WNO1303Jbyi/6OP2l3uhXzg1zXgJZJg=}&lt;/password&gt;
+  &lt;/security&gt;
+&lt;/datasource&gt;
+...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><strong>Optional Challenge:</strong> Can you encrypt the <code>user-name</code> and the <code>connection-url</code> using resolvers?</p>
+</li>
+<li>
+<p>Clean up. Remove the two data sources:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9993 /] /subsystem=datasources/data-source=test-mysql-ds-enc:remove()
+{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}
+
+[standalone@localhost:9993 /] /subsystem=datasources/data-source=test-mysql-ds:remove()
+{
+    "outcome" =&gt; "success",
+    "response-headers" =&gt; {
+        "operation-requires-reload" =&gt; true,
+        "process-state" =&gt; "reload-required"
+    }
+}
+
+[standalone@localhost:9993 /] :reload</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Stop and remove the MySQL DB container:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 ~]$ podman stop mysql-eap-test
+[jboss@eap1 ~]$ podman rm mysql-eap-test</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="tls-console.html">Enabling TLS/SSL in the EAP Web Console</a></span>
+  <span class="next"><a href="sso-console.html">EAP Web Console Single Sign-On using OIDC</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

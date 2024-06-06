@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Installing JBoss EAP Using an Automated Installer Script :: Red Hat JBoss EAP Administration II</title>
+    <link rel="prev" href="index.html">
+    <link rel="next" href="adv-patching.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img
+          src="../../../_/img/redhat-logo.png"
+          height="40px"
+          alt="Red Hat"
+        /></a>
+      <a
+        class="navbar-item"
+        style="font-size: 24px; color: white"
+        href="../../.."
+      >Red Hat JBoss EAP Administration II</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a
+          class="navbar-item"
+          href="https://github.com/RedHatQuickCourses/eap-admin2/issues"
+          target="_blank"
+        >Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="eap-admin2" data-version="8">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat JBoss EAP Administration II</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Advanced Installation</a>
+<ul class="nav-list">
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="response-files.html">Automated Installer Script</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="adv-patching.html">Patches and Updates</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../domain/index.html">JBoss EAP Domain Mode</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/domain-mode.html">JBoss EAP Domain Mode Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/domain-deployment.html">Deploying Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/jvm-config.html">JVM Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../cluster/index.html">Clustering and High Availability</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-udp.html">Standalone Mode Clustering (UDP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-tcp.html">Standalone Mode Clustering (TCP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/load-balancing.html">Load Balancing JBoss EAP Instances</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../security/index.html">Securing EAP</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/eap-security.html">Enabling or Disabling the EAP Management (Web) Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/tls-console.html">Enabling TLS/SSL in the EAP Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/vault.html">Secure Credential Storage Using Elytron Credential Store</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/sso-console.html">EAP Web Console Single Sign-On using OIDC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat JBoss EAP Administration II</span>
+    <span class="version">8</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat JBoss EAP Administration II</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">8</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat JBoss EAP Administration II</a></li>
+    <li><a href="index.html">Advanced Installation</a></li>
+    <li><a href="response-files.html">Automated Installer Script</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Installing JBoss EAP Using an Automated Installer Script</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>In the <a href="https://redhatquickcourses.github.io/eap-admin1">previous course</a> on basic JBoss EAP Administration, you learnt how to install JBoss EAP using the installation jar file. As a last step in the GUI installer, you were given the choice of saving your installation options as an XML file (<code>myinstall.xml</code>).</p>
+</div>
+<div class="paragraph">
+<p>You can use this XML file, along with a <code>variables</code> file (typically with the same name as the XML file but with a file extension of <code>.variables</code>, for example <code>myinstall.variables</code>), to provision JBoss EAP instances on other servers in an <strong>automated</strong> manner (non-interactive, unattended installation). This approach gives you flexibility to roll out JBoss EAP instances across multiple servers using wrapper shell scripts, configuration management tools like Ansible, Terraform, Puppet, and more.</p>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+You can version control the automated installer XML file and the <code>.variables</code> file in Git and optionally use GitOps and Infrastructure as Code (IaC) techniques to roll out JBoss EAP instances in your development, staging, QA and Production environments.
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock tip">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-tip" title="Tip"></i>
+</td>
+<td class="content">
+<div class="paragraph">
+<p>You need not copy the installer XML files and variables file to every system. You can serve these files over http or ftp and pass the location to the installer JAR as arguments:</p>
+</div>
+<div class="paragraph">
+<p>$ <strong>java -jar installer.jar <a href="http://myhost/myinstall.xml" class="bare">http://myhost/myinstall.xml</a> -variablesfile <a href="http://myhost/myinstall.xml.variables" class="bare">http://myhost/myinstall.xml.variables</a></strong></p>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div class="admonitionblock warning">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-warning" title="Warning"></i>
+</td>
+<td class="content">
+The automated installer is not backward compatible! You cannot use an installation script generated from a previous version of JBoss EAP to install a new version. Only use installation scripts generated by the same version of JBoss EAP.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/7.4/html-single/installation_guide/index#automated-installer-installation_default">Using the automated installer installation</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_install_jboss_eap_using_the_automated_installer"><a class="anchor" href="#_lab_install_jboss_eap_using_the_automated_installer"></a>Lab: Install JBoss EAP using the Automated Installer</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>You should have previously installed JBoss EAP using the JAR installer and saved the installation options into an automated installer XML file.</p>
+</li>
+<li>
+<p>Alternatively, you can download sample <a href="https://raw.githubusercontent.com/RedHatQuickCourses/eap-qc-apps/main/admin1/eap-automated/myinstall.xml">myinstall.xml</a> and <a href="https://raw.githubusercontent.com/RedHatQuickCourses/eap-qc-apps/main/admin1/eap-automated/myinstall.xml.variables">myinstall.xml.variables</a> files, and copy it to the machine where you want to install JBoss EAP</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_steps"><a class="anchor" href="#_steps"></a>Steps</h3>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If you have a <code>myinstall.xml</code> automated installation file from a previous GUI installation, then you can use it in this lab. Ensure that you edit the <code>myinstall.xml.variables</code> file and enter the password for the <code>admin</code> user, otherwise the installer will prompt you for the password.</p>
+</li>
+<li>
+<p>If you download the sample <a href="https://raw.githubusercontent.com/RedHatQuickCourses/eap-qc-apps/main/admin1/eap-automated/myinstall.xml">myinstall.xml</a> and <a href="https://raw.githubusercontent.com/RedHatQuickCourses/eap-qc-apps/main/admin1/eap-automated/myinstall.xml.variables">myinstall.xml.variables</a> files, then you need to edit both files and change some values before you proceed with the installation.</p>
+</li>
+<li>
+<p>Copy both files to the server where you want to install JBoss EAP. Inspect the <code>myinstall.xml</code> file. This file was captured from a JBoss EAP installation using the installer JAR file, and it customizes the installation with the following options:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Adds a credential store where you can store sensitive information like passwords in encrypted form</p>
+</li>
+<li>
+<p>Replaces the default JSF implementation (<code>Mojarra</code>) with <code>Apache MyFaces</code></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Edit the <code>myinstall.xml</code> file and change the following. <code>TODO</code> markers have been added to this file in places where you need to change the default value.</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>Replace the <strong>/path/to/eap</strong> with the full path to where you want to install JBoss EAP. If you want to run the installer as a non-root user, then you must make sure that the folder you enter here has the appropriate permissions to read and write files for non-root users. You can run the installer as a root user, or using <code>sudo</code> command, and then change the permissions and owner of the folder to run as a non-root user.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;admin-user username="admin"/&gt;
+  &lt;!-- TODO: CHANGE INSTALL PATH--&gt;
+  &lt;target-directory&gt;/path/to/eap&lt;/target-directory&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Replace the <strong>/path/to/credential.store</strong> with the full path to where you want to create the credential store. Note that this value should be the full path to a <strong>file</strong> and not a <strong>folder</strong>. For example, to create the credential store in your user&#8217;s home folder, the value should be <strong>/home/username/credential.store</strong>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">...
+ &lt;post-install-config name="add-credential-store"&gt;
+  &lt;attribute-list&gt;
+  &lt;attribute&gt;
+    &lt;name&gt;path&lt;/name&gt;
+    &lt;!-- TODO: CHANGE PATH TO CREDENTIAL STORE--&gt;
+    &lt;value&gt;/path/to/credential.store&lt;/value&gt;</code></pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Replace the <strong>/path/to/jsf-repo</strong> with the full path to the <strong>folder</strong> where you want to store the JSF maven manifests.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">...
+&lt;attribute&gt;
+  &lt;!-- TODO: CHANGE PATH TO JSF CHANNEL--&gt;
+  &lt;name&gt;localChannelPath&lt;/name&gt;
+  &lt;value&gt;/path/to/jsf-repo&lt;/value&gt;
+&lt;/attribute&gt;</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Edit the <code>myinstall.xml.variables</code> file and add values for the <code>adminPassword</code> and <code>credential-store.password</code> keys. You will use the <code>adminPassword</code> value to access the EAP web console after installation.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-none hljs">adminPassword=redhat123
+credential-store.password=redhat123</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Run the GUI installer and pass the <code>myinstall.xml</code> file as arguments</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ java -jar jboss-eap-8.0.0-installer.jar myinstall.xml
+[ Starting automated installation ]
+Selected components:
+Red Hat JBoss Enterprise Application Platform
+AppClient
+Docs
+Modules
+Welcome Content
+Installation Path: /home/rsriniva/test-eap-rsp
+Maven Repositories:
+ * https://maven.repository.redhat.com/ga/
+Resolving feature-packs
+100% ################################################## |
+Installing packages
+100% ################################################## |
+Downloading components
+100% ################################################## |
+Installing modules
+100% ################################################## |
+Generating configuration
+100% ################################################## |
+Generating documentation
+ Processing Complete
+Cleanup
+ Processing Complete
+[ Installation Complete ]
+[ Starting configuration tasks ]
+Adding admin user
+Advanced configuration - JSF Implementation
+Advanced standalone-full-ha.xml configuration - Credential store
+Advanced standalone-full-ha.xml configuration - JSF Implementation
+Advanced standalone.xml configuration - Credential store
+Advanced standalone.xml configuration - JSF Implementation
+Advanced standalone-full.xml configuration - Credential store
+Advanced standalone-full.xml configuration - JSF Implementation
+Advanced standalone-ha.xml configuration - Credential store
+Advanced standalone-ha.xml configuration - JSF Implementation
+Advanced host.xml configuration - Credential store
+Advanced host.xml configuration - JSF Implementation
+Advanced host-primary.xml configuration - Credential store
+Advanced host-primary.xml configuration - JSF Implementation
+Advanced host-secondary.xml configuration - Credential store
+Advanced host-secondary.xml configuration - JSF Implementation
+[ Configuration tasks completed ]</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>After the installation is completed, verify that a <code>credential.store</code> file, and a <code>jsf-repo</code> folder have been created in the path provided in the <code>myinstall.xml</code> file.</p>
+</li>
+<li>
+<p>In your new installation, start JBoss EAP using the <code>standalone.sh</code> script, and verify that you can log in to the JBoss EAP Management console at <a href="http://localhost:9990" class="bare">http://localhost:9990</a> using the <code>admin</code> username and the password you provided in the <code>myinstall.xml.variables</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="index.html">Advanced Installation</a></span>
+  <span class="next"><a href="adv-patching.html">Patches and Updates</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>

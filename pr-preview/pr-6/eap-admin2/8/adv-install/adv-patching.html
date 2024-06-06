@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Patching and Updating JBoss EAP :: Red Hat JBoss EAP Administration II</title>
+    <link rel="prev" href="response-files.html">
+    <link rel="next" href="../domain/index.html">
+    <meta name="generator" content="Antora 3.1.3">
+    <link rel="stylesheet" href="../../../_/css/site.css">
+    <script>var uiRootPath = '../../../_'</script>
+  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.redhat.com" target="_blank"><img
+          src="../../../_/img/redhat-logo.png"
+          height="40px"
+          alt="Red Hat"
+        /></a>
+      <a
+        class="navbar-item"
+        style="font-size: 24px; color: white"
+        href="../../.."
+      >Red Hat JBoss EAP Administration II</a>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a
+          class="navbar-item"
+          href="https://github.com/RedHatQuickCourses/eap-admin2/issues"
+          target="_blank"
+        >Report Issues</a>
+      </div>
+    </div>
+  </nav>
+</header><div class="body">
+<div class="nav-container" data-component="eap-admin2" data-version="8">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <h3 class="title"><a href="../index.html">Red Hat JBoss EAP Administration II</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="../index.html">Home</a>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="index.html">Advanced Installation</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="response-files.html">Automated Installer Script</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="2">
+    <a class="nav-link" href="adv-patching.html">Patches and Updates</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../domain/index.html">JBoss EAP Domain Mode</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/domain-mode.html">JBoss EAP Domain Mode Configuration</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/domain-deployment.html">Deploying Applications</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../domain/jvm-config.html">JVM Configuration</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../cluster/index.html">Clustering and High Availability</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-udp.html">Standalone Mode Clustering (UDP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/standalone-cluster-tcp.html">Standalone Mode Clustering (TCP)</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../cluster/load-balancing.html">Load Balancing JBoss EAP Instances</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <button class="nav-item-toggle"></button>
+    <a class="nav-link" href="../security/index.html">Securing EAP</a>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/eap-security.html">Enabling or Disabling the EAP Management (Web) Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/tls-console.html">Enabling TLS/SSL in the EAP Web Console</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/vault.html">Secure Credential Storage Using Elytron Credential Store</a>
+  </li>
+  <li class="nav-item" data-depth="2">
+    <a class="nav-link" href="../security/sso-console.html">EAP Web Console Single Sign-On using OIDC</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Red Hat JBoss EAP Administration II</span>
+    <span class="version">8</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <a class="title" href="../index.html">Red Hat JBoss EAP Administration II</a>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="../index.html">8</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="../index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="../index.html">Red Hat JBoss EAP Administration II</a></li>
+    <li><a href="index.html">Advanced Installation</a></li>
+    <li><a href="adv-patching.html">Patches and Updates</a></li>
+  </ul>
+</nav>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contents" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Patching and Updating JBoss EAP</h1>
+<div id="preamble">
+<div class="sectionbody">
+<div class="paragraph">
+<p>One of the most important tasks for an EAP administrator is to apply patches and updates at regular intervals to keep the JBoss EAP runtime environment safe from security vulnerabilities and other bugs.</p>
+</div>
+<div class="paragraph">
+<p>JBoss EAP offers a number of different ways to apply patches and update the runtime environment:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>JBoss EAP Installation Manager</p>
+</li>
+<li>
+<p>JBoss EAP CLI</p>
+</li>
+<li>
+<p>JBoss EAP Web console</p>
+</li>
+<li>
+<p>RPM</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Refer to the <a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/updating_red_hat_jboss_enterprise_application_platform/index#jboss-eap-8-update-methods_default">Update Methods</a> table in the product documentation for deciding on which method you prefer.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_updating_jboss_eap_using_rpm"><a class="anchor" href="#_updating_jboss_eap_using_rpm"></a>Updating JBoss EAP Using RPM</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This method is simple and easy to use if you already installed JBoss EAP using <code>yum</code> or <code>dnf</code> commands.</p>
+</div>
+<div class="paragraph">
+<p>Ensure that you are subscribed to the relevant JBoss EAP repository (<code>jb-eap-8.0-for-rhel-9-x86_64-rpms</code>) for receiving updates. See <a href="https://redhatquickcourses.github.io/eap-admin1/eap-admin1/8/install/install.html#_lab_2_installing_jboss_eap_using_rpm_method">Installing JBoss EAP using RPM method</a> for more details.</p>
+</div>
+<div class="paragraph">
+<p>Simply run <code>dnf update</code> or <code>yum update</code> periodically to fetch the latest JBoss EAP updates.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_updating_jboss_eap_using_the_installation_manager"><a class="anchor" href="#_updating_jboss_eap_using_the_installation_manager"></a>Updating JBoss EAP Using the Installation Manager</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Newly introduced in EAP 8.0, the <code>jboss-eap-installation-manager</code> tool provides access to the most recent supported versions of JBoss EAP components.</p>
+</div>
+<div class="paragraph">
+<p><code>jboss-eap-installation-manager</code> uses the concept of a <strong>channel</strong> to manage software components. A <code>channel</code> consists of a curated list of component versions (called <code>channel manifest</code>), and a collection of <code>repositories</code> used to resolve and retrieve those components.</p>
+</div>
+<div class="paragraph">
+<p>Each repository has a unique name (<code>id</code>) and a default Maven <code>repository URL</code>. The <code>jboss-eap-installation-manager</code> allows you to manage these channels effectively in both standalone and managed domain configurations.</p>
+</div>
+<div class="paragraph">
+<p>The <code>jboss-eap-installation-manager</code> tool is available in the <code>bin</code> folder of an EAP installation, and can also be downloaded from the Red Hat Customer Portal.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_updating_jboss_eap_using_the_jboss_eap_cli"><a class="anchor" href="#_updating_jboss_eap_using_the_jboss_eap_cli"></a>Updating JBoss EAP Using the JBoss EAP CLI</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Starting with JBoss EAP 8.0, the <code>jboss-eap-installation-manager</code> tool is the preferred tool for applying updates and patches, except in cases where you want to update remote JBoss EAP 8.0 instances.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you are updating or reverting a local JBoss EAP installation, the <code>jboss-eap-installation-manager</code> is recommended instead of the EAP Management CLI. However, you cannot use the <code>jboss-eap-installation-manager</code> to update or revert a remote JBoss EAP installation. In this scenario, use the EAP Management CLI.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In JBoss EAP 8.0, the <code>jboss-eap-installation-manager</code> operations are integrated into the JBoss EAP CLI, allowing you to update and revert your remote server installations without the need to log in to the remote machine and use the <code>jboss-eap-installation-manager</code> from the operating system command line.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the <a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/updating_red_hat_jboss_enterprise_application_platform/index#assembly_updating-a-jboss-eap-server-installation_default">Managing your JBoss EAP server installation using the Management CLI</a> section of the product documentation for a list of operations you can run using the JBoss EAP CLI.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_updating_jboss_eap_using_the_jboss_eap_web_console"><a class="anchor" href="#_updating_jboss_eap_using_the_jboss_eap_web_console"></a>Updating JBoss EAP Using the JBoss EAP Web console</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>You can update and patch your JBoss EAP installation using the EAP web console. The JBoss EAP web console also allows you to perform other operations such as, viewing the history of your updates, reverting JBoss EAP updates to a previous version, and managing channels. The web console offers the same operations as the <code>jboss-eap-installation-manager</code> CLI in a convenient web based interface.</p>
+</div>
+<div class="paragraph">
+<p>Refer to the <a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/updating_red_hat_jboss_enterprise_application_platform/index#updating_your_jboss_eap_server_using_the_web_console">Updating your JBoss EAP server using the web console</a> section of the product documentation for usage instructions.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_references"><a class="anchor" href="#_references"></a>References</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/updating_red_hat_jboss_enterprise_application_platform/index#doc-wrapper">Updating Red Hat JBoss Enterprise Application Platform</a></p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lab_updating_and_patching_jboss_eap"><a class="anchor" href="#_lab_updating_and_patching_jboss_eap"></a>Lab: Updating and Patching JBoss EAP</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_pre_requisites"><a class="anchor" href="#_pre_requisites"></a>Pre-requisites</h3>
+<div class="paragraph">
+<p>Since online installs using the GUI JAR installer or the Installation Manager always installs the latest patches and updates, to do this lab we recommend that you install the base JBoss EAP 8.0 GA version by downloading the JBoss EAP 8.0 zip archive. You will install the base version and apply patches to it.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="_images/jboss-eap-zip-archive.png" alt="jboss eap zip archive">
+</div>
+<div class="title">Figure 1. Download the JBoss EAP 8.0 zip archive</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can perform any ONE of the methods listed below. There is no need to do both.
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_updating_and_patching_jboss_eap_using_the_web_console"><a class="anchor" href="#_updating_and_patching_jboss_eap_using_the_web_console"></a>Updating and Patching JBoss EAP using the Web Console</h3>
+<div class="paragraph">
+<p>In this lab, you will update an existing JBoss EAP 8.0 installation using the EAP web console in <strong>online</strong> mode. You need internet access from the machine where you are running JBoss EAP 8.0.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Download the JBoss EAP 8.0 zip archive from the Customer Portal as shown in the pre-requisites section.</p>
+</li>
+<li>
+<p>Unarchive the zip archive in a folder of your choice under your home directory. Refer to the previous section on installing JBoss EAP 8.0 from a zip archive. You need to create a password for the <code>admin</code> user to access the web console.</p>
+</li>
+<li>
+<p>Start JBoss EAP in standalone mode</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ cd $EAP_HOME/bin # location where you unarchived the EAP 8.0 zip file
+$ ./standalone.sh</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Log in to the EAP web console using as the <code>admin</code> user.</p>
+</li>
+<li>
+<p>Click <code>Update Manager</code>. It shows the base version is installed and lists the components and their versions contained in this base release.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/eap-update-manager.png" alt="eap update manager">
+</div>
+<div class="title">Figure 2. JBoss EAP Update Manager page in web console</div>
+</div>
+</li>
+<li>
+<p>In the <code>Updates</code> column, click the <code>Installation update methods</code> button (small button with a downwards arrow) and select <code>Online updates</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/eap-online-update.png" alt="eap online update">
+</div>
+<div class="title">Figure 3. Check for updates online</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can also choose to update offline by selecting the <code>Offline using archives</code>. You will be prompted to upload a local copy of the update zip file that you can download from the Customer Portal. Whichever method you choose, the following steps and screenshots should be similar.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>You will be shown the updates that are available. Click <code>Next</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/updates-available.png" alt="updates available">
+</div>
+<div class="title">Figure 4. Show Available Updates</div>
+</div>
+</li>
+<li>
+<p>The web console will fetch the updates and display a <code>Server candidate prepared</code> message. Click <code>Next</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/prep-ready.png" alt="prep ready">
+</div>
+<div class="title">Figure 5. Updates fetched and ready to install</div>
+</div>
+</li>
+<li>
+<p>The updates will be applied and the server restarted. Click <code>Finish</code>.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/updates-applied.png" alt="updates applied">
+</div>
+<div class="title">Figure 6. Updates applied successfully</div>
+</div>
+</li>
+<li>
+<p>The <code>Update Manager</code> screen should now show a new entry with a unique ID and it will show you the list of components updated along with the old and new versions.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/new-update.png" alt="new update">
+</div>
+<div class="title">Figure 7. New Update Unique ID</div>
+</div>
+</li>
+<li>
+<p>You can apply similar such updates when they become available. Each update will be applied and a new unique ID will be generated. You can revert to specific update versions using this unique ID through the web console or the EAP CLI.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_updating_and_patching_jboss_eap_using_the_jboss_eap_cli"><a class="anchor" href="#_updating_and_patching_jboss_eap_using_the_jboss_eap_cli"></a>Updating and Patching JBoss EAP using the JBoss EAP CLI</h3>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you performed the update using the web console as outlined in the previous lab, then you will not see any new updates from the EAP CLI.
+</td>
+</tr>
+</table>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Repeat steps 1-3 from the <em>Updating and Patching JBoss EAP using the Web Console</em> lab to download and extract the base JBoss EAP 8.0 release to a new folder. Create a new <code>admin</code> management user with a password using the <code>add-user.sh</code> script.</p>
+</li>
+<li>
+<p>Connect to the existing EAP 8.0 server using the EAP CLI. Check the existing version:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ cd $EAP_HOME/bin
+$ ./jboss-cli.sh --connect
+[standalone@localhost:9990 /] version
+...
+<strong>Release: 21.0.5.Final-redhat-00001</strong>
+<strong>Product: JBoss EAP 8.0.0.GA</strong>
+...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>If you want to do an offline update, then log in to the Customer Portal and download the updates as a zip archive. You can also use the same zip file when you use the web console <code>Update Manager</code> to update your JBoss EAP release.</p>
+<div class="imageblock">
+<div class="content">
+<img src="_images/offline-update-dl.png" alt="Download offline update zip file">
+</div>
+</div>
+</li>
+<li>
+<p>Extract the zip file containing the updates into a folder.</p>
+</li>
+<li>
+<p>Prepare the update from the JBoss EAP CLI using the <strong>installer update</strong> command and pass the folder location where you extracted the updates zip file as an argument:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9990 /] <strong>installer update \
+  --offline \
+  --repositories=file:///tmp/jboss-eap-8.0.1.GA-maven-repository/maven-repository</strong>
+Updates found:
+    org.apache.sshd:sshd-common                         2.9.2.redhat-00001 ==&gt; 2.12.0.redhat-00001
+    org.apache.sshd:sshd-core                           2.9.2.redhat-00001 ==&gt; 2.12.0.redhat-00001
+    org.eclipse.jgit:org.eclipse.jgit                   6.2.0.202206071550-r-redhat-00001 ==&gt; 6.6.1.202309021850-r-redhat-00001
+    org.eclipse.jgit:org.eclipse.jgit.ssh.apache        6.2.0.202206071550-r-redhat-00001 ==&gt; 6.6.1.202309021850-r-redhat-00001
+    org.eclipse.parsson:parsson                         1.1.2.redhat-00001 ==&gt; 1.1.5.redhat-00001
+    org.jboss.eap:wildfly-ee-feature-pack-product-conf  8.0.0.GA-redhat-00011 ==&gt; 800.1.0.GA-redhat-00001
+Would you like to proceed with preparing this update? [y/N]:</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+If you want to do an online update, then your server should have access to the internet. Run <strong>installer update</strong> command in the JBoss EAP CLI and you will see the same set of updates as the offline option.
+</td>
+</tr>
+</table>
+</div>
+</li>
+<li>
+<p>Press <strong>y</strong> and hit enter to prepare the update. Wait while the runtime is checked and the CLI prompts you to run the <strong>perform-installation</strong> command.</p>
+</li>
+<li>
+<p>Apply the update. The CLI will disconnect while the updates are being applied.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9990 /] <strong>shutdown --perform-installation</strong></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Reconnect to the server using the JBoss EAP CLI, and verify that the updates have been applied:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">$ cd $EAP_HOME/bin
+$ ./jboss-cli.sh --connect
+[standalone@localhost:9990 /] version
+...
+Release: 21.0.5.Final-redhat-00001
+<strong>Product: JBoss EAP 8.0 Update 1.0</strong>
+...</code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>You can view the history of updates that you applied by running the <strong>installer history</strong> command:</p>
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[standalone@localhost:9990 /] <strong>installer history</strong>
+...
+Release: 21.0.5.Final-redhat-00001
+[dfe9268a] ... - update [org.jboss.eap.channels:eap-8.0::1.1.0.GA-redhat-00001]
+[3268b557] ... - install [org.jboss.eap.channels:eap-8.0::1.0.1.GA-redhat-00003]</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+You can revert to a specific version by running the <strong>installer revert --revision=xxxxxxxx</strong> command and passing it the unique ID of the update (first column values in the history output)
+</td>
+</tr>
+</table>
+</div>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_optional_challenge_lab_updating_using_the_jboss_eap_installation_manager"><a class="anchor" href="#_optional_challenge_lab_updating_using_the_jboss_eap_installation_manager"></a>(Optional) Challenge Lab: Updating using the JBoss EAP Installation Manager</h3>
+<div class="paragraph">
+<p>This is an optional lab where you will update an existing JBoss EAP installation using the JBoss EAP Installation Manager.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>From the Customer Portal download the base EAP 8.0.0 GA release zip archive and the latest JBoss EAP Installation Manager zip file.</p>
+</li>
+<li>
+<p>Extract the zip archive in a folder of your choice.</p>
+</li>
+<li>
+<p>Extract the JBoss EAP Installation Manager zip file to a different directory.</p>
+</li>
+<li>
+<p>Follow the instructions in the product documentation at <a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/8.0/html-single/updating_red_hat_jboss_enterprise_application_platform/index#updating-jboss-eap-using-the-jboss-eap-installation-manager_default">Updating JBoss EAP using the jboss-eap-installation-manager</a> to update your existing JBoss EAP 8.0.0 installation (<em>HINT:</em> Use the <strong>update list --dir</strong> command, where <strong>dir</strong> indicates the full path to your existing JBoss EAP install)</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="response-files.html">Automated Installer Script</a></span>
+  <span class="next"><a href="../domain/index.html">JBoss EAP Domain Mode</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <img src="../../../_/img/rhl-logo-red.png" height="40px" alt="Red Hat"  href="https://redhat.com" >
+</footer><script id="site-script" src="../../../_/js/site.js" data-ui-root-path="../../../_"></script>
+<script async src="../../../_/js/vendor/highlight.js"></script>
+  </body>
+</html>
