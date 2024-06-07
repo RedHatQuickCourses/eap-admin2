@@ -1,19 +1,19 @@
-= Red Hat JBoss EAP Administration II
+= Red Hat JBoss EAP 8 Administration II
 :navtitle: Home
 
 == Introduction
 
-Welcome to this quick course on _Advanced JBoss EAP Administration_.
-This course is the `third` in a series of `four` courses about Red Hat JBoss EAP:
+Welcome to this quick course on _Advanced JBoss EAP 8 Administration_.
+This course is the `third` in a series of `four` courses about Red Hat JBoss EAP 8:
 
-. Introduction to Red Hat JBoss EAP
+. Introduction to Red Hat JBoss EAP 8
 .. https://training-lms.redhat.com/sso/saml/auth/rhlpint?RelayState=deeplinkoffering%3D59719403[For Red Hat Associates^]
 .. https://training-lms.redhat.com/sso/saml/auth/rhopen?RelayState=deeplinkoffering%3D59719502[For Red Hat Partners^]
-. https://redhatquickcourses.github.io/eap-admin1[Red Hat JBoss EAP Administration I^]
-. *Red Hat JBoss EAP Administration II (_This course_)*
+. https://redhatquickcourses.github.io/eap-admin1[Red Hat JBoss EAP 8 Administration I^]
+. *Red Hat JBoss EAP 8 Administration II (_This course_)*
 . https://demo.redhat.com/catalog?search=eap+8&item=babylon-catalog-prod%2Fsandboxes-gpte.jboss-eap-migration.prod[Migrating to Red Hat JBoss EAP 8^]
 
-This course covers advanced JBoss EAP installation and upgrade methods, JBoss EAP Domain mode configuration and management, clustering, security and high availability. 
+This course covers advanced JBoss EAP 8 installation and upgrade methods, JBoss EAP 8 Domain mode configuration and management, clustering, security and high availability. 
 
 NOTE: The hands-on labs for this course have been tested on *JBoss EAP 8.0*. The labs should mostly work in minor update releases of EAP 8. If you encounter any issues, please open a GitHub issue in the course repository.
 
@@ -33,7 +33,7 @@ NOTE: We are planning to provide a classroom environment for Red Hat associates 
 
 For the hands-on labs in this course, you need to provision the following:
 
-* 3 RHEL 9 or CentOS Stream 9 VMs - each with at least 8 vCPU, 16GB RAM, 2 NICs and 80GB hard disk
+* 3 RHEL 9 or CentOS Stream 9 VMs - each with at least 8 vCPU, 16GB RAM, and 80GB hard disk
 
 == Prerequisites
 
@@ -46,8 +46,8 @@ For the hands-on labs in this course, you need to provision the following:
 
 The overall objectives of this course include:
 
-* Automated installation using JBoss EAP Installer Response files
-* JBoss EAP Domain mode configuration and deployment
-* JVM configuration and optimization for JBoss EAP applications
-* Clustering and High Availability in JBoss EAP
-* Securing JBoss EAP
+* Automated installation using JBoss EAP 8 Installer Response files
+* JBoss EAP 8 Domain mode configuration and deployment
+* JVM configuration and optimization for JBoss EAP 8 applications
+* Clustering and High Availability in JBoss EAP 8
+* Securing JBoss EAP 8
