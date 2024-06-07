@@ -346,7 +346,7 @@ There is a <code>EAP_HOME/bin/domain.conf</code> file in the same location as th
 <p>In the <code>eap1</code> Host Controller page, click <code>JVMs</code> in the left sidebar.</p>
 </li>
 <li>
-<p>There should a single <code>default</code> entry in the JVM list page. Click on <code>default</code> to view the settings. It has a default heap size of <code>64m</code>, maximum heap size of <code>256m</code>, and JVM option <code>-server, -XX:MetaspaceSize=96m, -XX:MaxMetaspaceSize=256m</code></p>
+<p>There should a single <code>default</code> entry in the JVM list page. Click on <code>default</code> to view the settings. It has a default heap size of <code>64m</code>, maximum heap size of <code>256m</code>, and JVM option <code>-server, -XX:MetaspaceSize=96m, -XX:MaxMetaspaceSize=256m</code>.</p>
 </li>
 <li>
 <p>Click <code>Add</code> to add a new JVM configuration. In the <code>Add JVM</code> dialog that pops up, enter <code>myeap1jvm</code> as the name and click <code>Add</code>.</p>
@@ -358,7 +358,7 @@ There is a <code>EAP_HOME/bin/domain.conf</code> file in the same location as th
 <p>Click the <code>Back</code> link to go back to the <code>Runtime</code> view. You need to restart the server instances running on the host <code>eap1</code> for your JVM changes to take effect. Click <code>Runtime &gt; Hosts&gt; eap1 &gt; server-one</code>. Click the <code>View</code> button next to <code>server-one</code> and then click <code>Restart</code> to restart the JVM process for <code>server-one</code>.</p>
 </li>
 <li>
-<p>Wait for a few minutes while <code>server-one</code> is restarted. After the server is started (indicated by a green tick mark in the web console), log in to the <code>eap1</code> VM using SSH. Run the following command to check the startup parameters for <code>server-one</code></p>
+<p>Wait for a few minutes while <code>server-one</code> is restarted. After the server is started (indicated by a green tick mark in the web console), log in to the <code>eap1</code> VM using SSH. Run the following command to check the startup parameters for <code>server-one</code>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-bash hljs" data-lang="bash">[jboss@eap1 ~]$ ps ax | grep server-one
@@ -386,7 +386,7 @@ There is a <code>EAP_HOME/bin/domain.conf</code> file in the same location as th
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Edit the heap settings at the server group level. Restart the server instances and observe by running the <code>ps ax</code> command if your new settings are applied</p>
+<p>Edit the heap settings at the server group level. Restart the server instances and observe by running the <code>ps ax</code> command if your new settings are applied.</p>
 </li>
 <li>
 <p>Edit the JVM server configuration for one of the servers (server-one, server-two etc) and verify that values set at the individual server level override values from both the host and the server group level.</p>

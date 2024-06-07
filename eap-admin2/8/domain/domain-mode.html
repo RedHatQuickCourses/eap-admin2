@@ -342,7 +342,7 @@ Although Red Hat does not recommend editing XML configuration files directly, th
 </div>
 </li>
 <li>
-<p>Inspect the default <code>EAP_HOME/domain/configuration/domain.xml</code> file. There are 2 <code>Server Groups</code> defined in the domai (<code>main-server-group</code> and <code>other-server-group</code>).</p>
+<p>Inspect the default <code>EAP_HOME/domain/configuration/domain.xml</code> file. There are 2 <code>Server Groups</code> defined in the domain (<code>main-server-group</code> and <code>other-server-group</code>).</p>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code class="language-xml hljs" data-lang="xml">&lt;server-groups&gt;
@@ -395,7 +395,7 @@ management interface listening on http://192.168.124.10:9990/management
 </div>
 </div>
 <div class="paragraph">
-<p>Since the secondary host controllers need to communicate with the domain controller to fetch configuration information, you need to start the primary controller to bind to the IP address of the <code>controller</code> VM rather than <code>localhost</code>.</p>
+<p>Since the secondary host controllers need to communicate with the domain controller to fetch configuration information, you need to start the primary controller to bind to the IP address of the <code>controller</code> VM rather than the <code>localhost</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
