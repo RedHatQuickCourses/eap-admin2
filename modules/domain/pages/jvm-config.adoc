@@ -79,7 +79,7 @@ image::host-config-view.png[title=Configure Host Level Settings]
 
 . In the `eap1` Host Controller page, click `JVMs` in the left sidebar.
 
-. There should a single `default` entry in the JVM list page. Click on `default` to view the settings. It has a default heap size of `64m`, maximum heap size of `256m`, and JVM option `-server, -XX:MetaspaceSize=96m, -XX:MaxMetaspaceSize=256m`
+. There should a single `default` entry in the JVM list page. Click on `default` to view the settings. It has a default heap size of `64m`, maximum heap size of `256m`, and JVM option `-server, -XX:MetaspaceSize=96m, -XX:MaxMetaspaceSize=256m`.
 
 . Click `Add` to add a new JVM configuration. In the `Add JVM` dialog that pops up, enter `myeap1jvm` as the name and click `Add`.
 
@@ -87,7 +87,7 @@ image::host-config-view.png[title=Configure Host Level Settings]
 
 . Click the `Back` link to go back to the `Runtime` view. You need to restart the server instances running on the host `eap1` for your JVM changes to take effect. Click `Runtime > Hosts> eap1 > server-one`. Click the `View` button next to `server-one` and then click `Restart` to restart the JVM process for `server-one`.
 
-. Wait for a few minutes while `server-one` is restarted. After the server is started (indicated by a green tick mark in the web console), log in to the `eap1` VM using SSH. Run the following command to check the startup parameters for `server-one`
+. Wait for a few minutes while `server-one` is restarted. After the server is started (indicated by a green tick mark in the web console), log in to the `eap1` VM using SSH. Run the following command to check the startup parameters for `server-one`.
 +
 [source,bash]
 ----
@@ -103,7 +103,7 @@ image::host-config-view.png[title=Configure Host Level Settings]
 
 == Optional Challenge Exercise
 
-. Edit the heap settings at the server group level. Restart the server instances and observe by running the `ps ax` command if your new settings are applied
+. Edit the heap settings at the server group level. Restart the server instances and observe by running the `ps ax` command if your new settings are applied.
 
 . Edit the JVM server configuration for one of the servers (server-one, server-two etc) and verify that values set at the individual server level override values from both the host and the server group level.
 
